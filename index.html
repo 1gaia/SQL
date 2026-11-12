@@ -1,0 +1,1966 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SQL LAB — 프로그래밍기능사 SQL 실습</title>
+<style>:root{--bg:#f6f8fa;--panel:#fff;--panel2:#f0f3f6;--line:#d0d7de;--text:#1f2328;--muted:#59636e;--accent:#0969da;--accent-bg:#ddf4ff;--good:#1a7f37;--good-bg:#dafbe1;--bad:#cf222e;--bad-bg:#ffebe9;--warn:#9a6700;--warn-bg:#fff8c5;--xp:#8250df;--xp-bg:#fbefff;--code-bg:#f6f8fa;--shadow:0 1px 3px rgba(31,35,40,.12);--kw:#cf222e;--st:#0a3069;--nm:#0550ae;--cm:#6e7781;--ty:#8250df;--fn:#116329;--add:#dafbe1;--chg:#fff3b0;--del:#ffe0de}
+:root[data-theme="dark"]{--bg:#0d1117;--panel:#161b22;--panel2:#1c232c;--line:#30363d;--text:#e6edf3;--muted:#9aa4af;--accent:#58a6ff;--accent-bg:#102a4c;--good:#3fb950;--good-bg:#12301c;--bad:#ff7b72;--bad-bg:#3b1618;--warn:#d29922;--warn-bg:#352a0b;--xp:#bc8cff;--xp-bg:#2a1d44;--code-bg:#0d1117;--shadow:none;--kw:#ff7b72;--st:#a5d6ff;--nm:#79c0ff;--cm:#8b949e;--ty:#d2a8ff;--fn:#7ee787;--add:#12301c;--chg:#4a3a0a;--del:#3b1618}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;line-height:1.65;font-size:16px}
+button,input,select,textarea{font:inherit;color:inherit}
+code,pre,textarea.sql,.mono{font-family:"D2Coding",Consolas,"SF Mono",Menlo,monospace}
+code{background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:0 5px;font-size:.92em}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.kw{color:var(--kw);font-weight:600}.st{color:var(--st)}.nm{color:var(--nm)}.cm{color:var(--cm);font-style:italic}.ty{color:var(--ty)}.fn{color:var(--fn)}
+header.top{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hin{max-width:1480px;margin:0 auto;padding:8px 14px;display:flex;align-items:center;gap:10px}
+.sp{flex:1}
+.logo{display:flex;align-items:baseline;gap:8px;border:0;background:none;padding:0;cursor:pointer}
+.logo b{font-family:Consolas,monospace;font-size:20px}.logo b i{font-style:normal;color:var(--accent)}.logo small{color:var(--muted);font-size:12px}
+.gp{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.gp .bar{width:90px;height:7px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.gp .bar div{height:100%;background:var(--good);width:0;transition:width .3s}
+.iconbtn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 10px;cursor:pointer;min-height:36px}
+.iconbtn:hover{border-color:var(--accent)}
+.menu,.dbtog{display:none}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 16px;cursor:pointer;font-weight:600;min-height:40px}
+.btn:hover{border-color:var(--accent)}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent}.btn.small{padding:3px 10px;min-height:32px;font-size:14px}.btn.big{padding:12px 24px;font-size:17px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.shell{max-width:1480px;margin:0 auto;display:grid;grid-template-columns:230px minmax(0,1fr) 340px;gap:0;align-items:start}
+.nav{position:sticky;top:53px;height:calc(100vh - 53px);overflow:auto;padding:12px 8px 24px 12px;border-right:1px solid var(--line)}
+.nav a{display:grid;grid-template-columns:24px 1fr auto;column-gap:6px;align-items:center;padding:7px 8px;border-radius:8px;text-decoration:none;color:var(--text);font-size:14px;line-height:1.35;border:1px solid transparent}
+.nav a:hover{background:var(--panel2)}.nav a.on{background:var(--accent-bg);border-color:var(--accent)}
+.nav a.home{display:block;font-weight:700;margin-bottom:6px}
+.nav .no{width:22px;height:22px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:700}
+.nav a.done .no{background:var(--good);color:#fff;border-color:var(--good)}
+.nav .min{grid-column:2;font-size:11px;color:var(--muted)}.nav .sc{grid-column:3;grid-row:1/3;font-size:12px;color:var(--muted)}.nav a.done .sc{color:var(--good);font-weight:700}
+.main{padding:18px 22px 60px;min-width:0}
+.db{position:sticky;top:53px;height:calc(100vh - 53px);overflow:auto;border-left:1px solid var(--line);background:var(--bg)}
+.dbh{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--bg);border-bottom:1px solid var(--line)}
+.dbx{display:none}.dbbody{padding:10px}
+.dbt{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:10px}
+.tname{display:flex;align-items:center;gap:6px}.tname .cnt{color:var(--muted);font-size:12px}.vtag{font-size:10px;background:var(--xp-bg);color:var(--xp);border-radius:4px;padding:0 5px;font-weight:700}
+.cols{display:flex;flex-wrap:wrap;gap:4px 10px;margin:4px 0;font-size:12.5px}.col i{font-style:normal;color:var(--muted);font-size:11px}
+.bg{font-style:normal;font-size:10px;font-weight:700;border-radius:4px;padding:0 4px;margin-left:3px}
+.bg.pk{background:var(--warn-bg);color:var(--warn)}.bg.fk{background:var(--accent-bg);color:var(--accent)}.bg.nn{background:var(--panel2);color:var(--muted)}.bg.uq{background:var(--xp-bg);color:var(--xp)}
+.chk{font-size:12px;color:var(--muted)}.vsql{margin:4px 0;font-size:12px;white-space:pre-wrap;color:var(--muted)}
+.txbadge{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn);border-radius:8px;padding:6px 10px;margin-bottom:10px;font-size:13px;font-weight:600}
+.idxs{font-size:12.5px;margin:6px 0}.chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:0 9px;margin:2px 3px 2px 0;background:var(--panel);font-size:12px}
+.muted{color:var(--muted)}
+/* 본문 */
+.lhead{margin-bottom:14px}.lno{font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.5px}
+h1{font-size:26px;line-height:1.3;margin:2px 0 8px}
+.goal{background:var(--accent-bg);border:1px solid var(--accent);border-radius:10px;padding:8px 12px;font-size:15px}
+h2.sec{font-size:19px;margin:30px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--line)}
+.para{margin:10px 0}
+.callout{border-radius:10px;padding:9px 13px;margin:12px 0;border:1px solid}.callout.tip{background:var(--good-bg);border-color:var(--good)}.callout.warn{background:var(--warn-bg);border-color:var(--warn)}
+.syn{font-family:Consolas,"D2Coding",monospace;background:var(--code-bg);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:9px 14px;margin:10px 0;overflow:auto;font-size:15px}
+.syn b{color:var(--accent)}
+.terms{display:grid;grid-template-columns:max-content 1fr;gap:1px 14px;margin:10px 0;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 14px}
+.terms dt{font-weight:700;padding:5px 0;border-bottom:1px dashed var(--line)}.terms dd{margin:0;padding:5px 0;border-bottom:1px dashed var(--line)}
+.terms dt:nth-last-of-type(1),.terms dd:last-child{border-bottom:0}
+.tw{overflow:auto;max-width:100%;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+table{border-collapse:collapse;width:100%}
+.cmp th,.cmp td{border-bottom:1px solid var(--line);padding:6px 10px;text-align:left;font-size:14.5px;vertical-align:top}.cmp thead th{background:var(--panel2)}.cmp tbody th{white-space:nowrap}
+.cmp{min-width:480px}
+.rt{font-size:14px;width:auto;min-width:min(100%,320px)}.rt th,.rt td{padding:4px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.rt thead th{background:var(--panel2);position:sticky;top:0;font-size:13px}
+.rt td.num{text-align:right;font-variant-numeric:tabular-nums}.null{color:var(--muted);font-style:italic;font-size:12px;background:var(--warn-bg);padding:0 5px;border-radius:4px}
+.rt td.empty{color:var(--muted);text-align:center;padding:14px}.rt .mk{width:24px;text-align:center;font-weight:700;color:var(--muted)}
+.rt tr.add td{background:var(--add)}.rt tr.chg td{background:var(--chg)}.rt tr.del td{background:var(--del);text-decoration:line-through;color:var(--muted)}
+.rt tr.add .mk{color:var(--good)}.rt tr.del .mk{color:var(--bad)}
+.rt td.chgcell{background:var(--chg);font-weight:700;outline:2px solid var(--warn);outline-offset:-2px}.rt td.chgcell s{color:var(--muted);font-weight:400}
+.rt tr.dim td{opacity:.35;text-decoration:line-through}.rt tr.ghead td{background:var(--accent-bg);font-weight:700;font-size:13px}.rt tr.ghead.dim td{text-decoration:none}
+.more{padding:6px 10px;font-size:12px;color:var(--muted)}
+/* 에디터 */
+.blk{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:14px 0;box-shadow:var(--shadow)}
+.note{font-size:14.5px;margin-bottom:8px}
+.asuser{display:inline-block;background:var(--xp-bg);color:var(--xp);border-radius:999px;padding:0 10px;font-size:13px;font-weight:700;margin-bottom:6px}
+.ed{position:relative;border:1px solid var(--line);border-radius:8px;background:var(--code-bg);overflow:hidden}
+.ed pre.hlpre,.ed textarea.sql{margin:0;padding:10px 12px;font-size:15px;line-height:1.65;white-space:pre;tab-size:2;width:100%;border:0;letter-spacing:0;overflow:auto}
+.ed pre.hlpre{position:absolute;inset:0;pointer-events:none;overflow:hidden;color:var(--text)}
+.ed textarea.sql{position:relative;display:block;background:transparent;color:transparent;caret-color:var(--text);resize:none;outline:none;min-height:3.4em}
+.ed:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-bg)}
+.ed textarea.sql::selection{background:color-mix(in srgb,var(--accent) 35%,transparent);color:transparent}
+pre.code{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:8px 0;font-size:15px;overflow:auto;white-space:pre-wrap}
+.btns{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}.hint{font-size:12px;color:var(--muted)}
+.out{margin-top:8px}.resbox{margin-top:8px}
+.cap{font-size:13px;color:var(--muted);margin:6px 0 3px;font-weight:600}.echo{font-family:Consolas,monospace;font-size:12.5px;color:var(--muted);margin-bottom:2px}
+.okmsg{background:var(--good-bg);border:1px solid var(--good);border-radius:8px;padding:6px 12px;margin-bottom:6px;font-size:14.5px}
+.res.msg.ddl .okmsg{background:var(--accent-bg);border-color:var(--accent)}
+.errmsg{background:var(--bad-bg);border:1px solid var(--bad);border-radius:8px;padding:8px 12px;color:var(--text);word-break:break-word}
+.errmsg b{color:var(--bad)}.skip,.errtip{font-size:13px;color:var(--muted);margin-top:4px}
+.good.big,.bad.big{margin-top:8px;border-radius:8px;padding:8px 12px;font-weight:600}.good.big{background:var(--good-bg);border:1px solid var(--good)}.bad.big{background:var(--bad-bg);border:1px solid var(--bad)}
+.mission{border-left:5px solid var(--xp)}.mission.done{border-left-color:var(--good)}
+.mtag,.qtag{font-size:13px;font-weight:700;color:var(--xp);margin-bottom:4px}.mstat{color:var(--good)}
+.qtag{color:var(--accent)}
+.mq,.qq{font-size:16px;margin:4px 0 6px}
+.prev{margin:6px 0;font-size:14px}.prev summary{cursor:pointer;color:var(--accent);font-weight:600}
+.hints .hint-i{background:var(--warn-bg);border:1px solid var(--warn);border-radius:8px;padding:6px 12px;margin-top:6px;font-size:14.5px}
+.sol{margin-top:8px}
+/* 퀴즈 */
+.opts{display:grid;gap:8px;margin:8px 0}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:9px 12px;cursor:pointer;min-height:44px}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-bg)}
+.opt .ol{flex:0 0 24px;height:24px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:700}
+.opt .ot{word-break:break-word}
+.opt.right{border-color:var(--good);background:var(--good-bg)}.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.opt:disabled{cursor:default;opacity:.85}
+.fb .good{color:var(--good);font-weight:700}.fb .bad{color:var(--bad);font-weight:700}.why{background:var(--panel2);border-radius:8px;padding:8px 12px;margin-top:6px;font-size:14.5px}
+/* 단계 장치 */
+.stepbar,.jtabs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.stp{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:4px 12px;cursor:pointer;font-weight:600;font-size:14px}
+.stp i{font-style:normal;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--panel2);margin-right:6px;font-size:12px}
+.stp.on{background:var(--accent);color:#fff;border-color:var(--accent)}.stp.on i{background:rgba(255,255,255,.25)}.stp.past{border-color:var(--good)}.stp.skip{opacity:.55}
+.stepdesc{background:var(--accent-bg);border:1px solid var(--accent);border-radius:8px;padding:8px 12px;margin:8px 0}
+.jgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.jcol.wide{grid-column:1/-1}
+.rt tr.hit td{background:var(--chg);box-shadow:inset 0 0 0 1px var(--warn)}
+.rt td.nullhl .null{background:var(--warn);color:#fff}
+.rt tbody tr[class]:hover td{filter:brightness(.97)}
+.joinviz .rt tbody tr{cursor:pointer}
+.row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;font-size:14px}.sel{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:5px 8px;min-height:36px}
+/* 홈 */
+.hero{text-align:center;padding:30px 10px 14px}.hero h1{font-size:44px;margin:4px 0}.acc{color:var(--accent)}.sub{color:var(--muted);font-size:17px;margin:4px 0 16px}.hero .btns{justify-content:center}
+.howto{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}.ho{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}.ho b{display:block;color:var(--accent)}.ho span{font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:6px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;box-shadow:var(--shadow)}
+.lcard{display:flex;gap:12px;align-items:center;text-align:left;cursor:pointer;width:100%}.lcard:hover{border-color:var(--accent)}
+.lcard .ln{flex:0 0 34px;height:34px;border-radius:50%;background:var(--accent-bg);color:var(--accent);display:grid;place-items:center;font-weight:800}.lcard.done .ln{background:var(--good);color:#fff}.lcard .ls{font-size:12.5px;color:var(--muted)}
+.foot{color:var(--muted);font-size:13px;margin-top:18px}
+.pn{display:flex;justify-content:space-between;gap:10px;margin-top:30px;flex-wrap:wrap}
+#toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);background:#1f2328;color:#fff;padding:9px 16px;border-radius:999px;opacity:0;transition:.25s;z-index:60;pointer-events:none;font-size:14px;max-width:90vw;text-align:center}#toast.on{opacity:1;transform:translate(-50%,0)}
+.scrim{display:none}
+@media (max-width:1180px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .menu,.dbtog{display:inline-block}.logo small{display:none}.gp .bar{width:50px}
+  .nav,.db{position:fixed;top:53px;bottom:0;z-index:40;background:var(--bg);box-shadow:0 0 30px rgba(0,0,0,.3);transition:transform .25s;height:auto}
+  .nav{left:0;width:min(300px,86vw);transform:translateX(-105%)}
+  .db{right:0;width:min(420px,94vw);transform:translateX(105%);border-left:1px solid var(--line)}
+  body.navopen .nav,body.dbopen .db{transform:none}
+  body.navopen .scrim,body.dbopen .scrim{display:block;position:fixed;inset:53px 0 0 0;background:rgba(0,0,0,.4);z-index:35}
+  .dbx{display:inline-block}
+  .main{padding:14px 14px 60px}
+}
+@media (max-width:640px){
+  h1{font-size:22px}.hero h1{font-size:34px}.howto{grid-template-columns:1fr 1fr}.jgrid{grid-template-columns:1fr}
+  .terms{grid-template-columns:1fr}.terms dt{border-bottom:0;padding-bottom:0}.gp span{display:none}
+  .hin{padding:6px 10px;gap:6px}.btn{padding:8px 12px}
+  .ed pre.hlpre,.ed textarea.sql{font-size:14px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head>
+<body><div id="app"></div><noscript>이 페이지는 JavaScript가 필요해요.</noscript>
+<script>
+/* MiniSQL — 학습용 SQL 엔진 (SELECT/JOIN/GROUP BY/HAVING/ORDER BY/INSERT/UPDATE/DELETE)
+   외부 라이브러리 없이 브라우저에서 동작한다. */
+(function (root) {
+  'use strict';
+  var KW = new Set(['SELECT','FROM','WHERE','GROUP','BY','HAVING','ORDER','ASC','DESC','LIMIT','JOIN','INNER','LEFT','RIGHT','OUTER','CROSS','ON','AS','AND','OR','NOT','NULL','IS','IN','LIKE','BETWEEN','DISTINCT','INSERT','INTO','VALUES','UPDATE','SET','DELETE','COMMIT','ROLLBACK','GRANT','REVOKE','CREATE','DROP','TABLE','UNION','ALL','INTERSECT','EXCEPT','MINUS','EXISTS','CASE','WHEN','THEN','ELSE','END','OFFSET','FULL']);
+  var AGG = { COUNT: 1, SUM: 1, AVG: 1, MAX: 1, MIN: 1 };
+
+  function SqlError(msg) { this.message = msg; }
+  SqlError.prototype = Object.create(Error.prototype);
+  function err(m) { throw new SqlError(m); }
+
+  function tokenize(src) {
+    var re = /\s+|--[^\n]*|('(?:[^']|'')*')|("(?:[^"]|"")*")|(\d+\.\d+|\d+)|([\p{L}_][\p{L}\p{N}_]*)|(<>|!=|<=|>=|\|\||[=<>(),.*+\-\/%;])|(.)/uy;
+    var toks = [], m; re.lastIndex = 0;
+    while (re.lastIndex < src.length) {
+      var start = re.lastIndex; m = re.exec(src);
+      if (!m) break;
+      if (m[1] !== undefined) toks.push({ t: 'str', v: m[1].slice(1, -1).replace(/''/g, "'"), s: start, e: re.lastIndex });
+      else if (m[2] !== undefined) toks.push({ t: 'id', v: m[2].slice(1, -1), s: start, e: re.lastIndex, q: true });
+      else if (m[3] !== undefined) toks.push({ t: 'num', v: parseFloat(m[3]), f: /[.eE]/.test(m[3]), s: start, e: re.lastIndex });
+      else if (m[4] !== undefined) { var up = m[4].toUpperCase(); toks.push(KW.has(up) ? { t: 'kw', v: up, raw: m[4], s: start, e: re.lastIndex } : { t: 'id', v: m[4], s: start, e: re.lastIndex }); }
+      else if (m[5] !== undefined) toks.push({ t: 'op', v: m[5], s: start, e: re.lastIndex });
+      else if (m[6] !== undefined) err('unrecognized token: "' + m[6] + '"');
+    }
+    return toks;
+  }
+
+  function Parser(src) { this.src = src; this.toks = tokenize(src); this.i = 0; }
+  var P = Parser.prototype;
+  P.peek = function (o) { return this.toks[this.i + (o || 0)]; };
+  P.near = function () { var t = this.peek(); return t ? 'near "' + this.src.slice(t.s, t.e) + '": syntax error' : 'incomplete input'; };
+  P.isKw = function (v, o) { var t = this.peek(o); return t && t.t === 'kw' && t.v === v; };
+  P.isOp = function (v) { var t = this.peek(); return t && t.t === 'op' && t.v === v; };
+  P.eatKw = function (v) { if (this.isKw(v)) { this.i++; return true; } return false; };
+  P.eatOp = function (v) { if (this.isOp(v)) { this.i++; return true; } return false; };
+  P.needKw = function (v) { if (!this.eatKw(v)) err(this.near()); };
+  P.needOp = function (v) { if (!this.eatOp(v)) err(this.near()); };
+  P.ident = function () { var t = this.peek(); if (t && t.t === 'id') { this.i++; return t.v; } err(this.near()); };
+
+  P.statements = function () {
+    var out = [];
+    while (this.i < this.toks.length) {
+      if (this.eatOp(';')) continue;
+      out.push(this.statement());
+      if (this.i < this.toks.length && !this.isOp(';')) err(this.near());
+    }
+    return out;
+  };
+  P.statement = function () {
+    var t = this.peek();
+    if (!t) err('incomplete input');
+    if (t.t === 'kw') {
+      switch (t.v) {
+        case 'SELECT': return this.compound();
+        case 'INSERT': return this.insert();
+        case 'UPDATE': return this.update();
+        case 'DELETE': return this.del();
+        case 'COMMIT': case 'ROLLBACK': this.i++; return { k: 'tx', v: t.v };
+        case 'GRANT': case 'REVOKE': err('이 실습 엔진은 ' + t.v + '를 실행하지 않아요 (권한 명령은 선택 활동으로 다뤄요)');
+      }
+    }
+    err(this.near());
+  };
+  P.compound = function () {
+    var first = this.select(), ops = [];
+    while (this.isKw('UNION') || this.isKw('INTERSECT') || this.isKw('EXCEPT') || this.isKw('MINUS')) {
+      var op = this.peek().v; this.i++; if (op === 'MINUS') op = 'EXCEPT';
+      var all = false; if (op === 'UNION' && this.eatKw('ALL')) all = true;
+      ops.push({ op: op, all: all, q: this.select() });
+    }
+    if (!ops.length) return first;
+    var last = ops[ops.length - 1].q, c = { k: 'compound', first: first, ops: ops, order: last.order, limit: last.limit, offset: last.offset };
+    last.order = null; last.limit = null; last.offset = null;
+    return c;
+  };
+  P.select = function () {
+    this.needKw('SELECT');
+    var q = { k: 'select', distinct: false, cols: [], from: [], joins: [], where: null, group: null, having: null, order: null, limit: null, offset: null };
+    if (this.eatKw('DISTINCT')) q.distinct = true;
+    do {
+      if (this.isOp('*')) { this.i++; q.cols.push({ star: true }); continue; }
+      var t0 = this.peek(), t1 = this.peek(1), t2 = this.peek(2);
+      if (t0 && t0.t === 'id' && t1 && t1.t === 'op' && t1.v === '.' && t2 && t2.t === 'op' && t2.v === '*') { this.i += 3; q.cols.push({ star: true, tbl: t0.v }); continue; }
+      var s = this.peek(); if (!s) err('incomplete input');
+      var e = this.expr(); var text = this.src.slice(s.s, this.toks[this.i - 1].e);
+      var alias = null;
+      if (this.eatKw('AS')) alias = this.ident(); else if (this.peek() && this.peek().t === 'id') alias = this.ident();
+      q.cols.push({ e: e, alias: alias, text: text });
+    } while (this.eatOp(','));
+    if (this.eatKw('FROM')) {
+      q.from.push(this.tableRef());
+      for (;;) {
+        if (this.eatOp(',')) { q.joins.push({ type: 'CROSS', ref: this.tableRef(), on: null }); continue; }
+        var type = null;
+        if (this.isKw('JOIN')) { type = 'INNER'; }
+        else if (this.isKw('INNER') && this.isKw('JOIN', 1)) { type = 'INNER'; this.i++; }
+        else if (this.isKw('CROSS') && this.isKw('JOIN', 1)) { type = 'CROSS'; this.i++; }
+        else if (this.isKw('LEFT')) { type = 'LEFT'; this.i++; this.eatKw('OUTER'); }
+        else if (this.isKw('RIGHT')) { type = 'RIGHT'; this.i++; this.eatKw('OUTER'); }
+        else if (this.isKw('FULL')) { type = 'FULL'; this.i++; this.eatKw('OUTER'); }
+        else break;
+        this.needKw('JOIN');
+        var ref = this.tableRef(), on = null;
+        if (this.eatKw('ON')) on = this.expr();
+        q.joins.push({ type: type, ref: ref, on: on });
+      }
+    }
+    if (this.eatKw('WHERE')) q.where = this.expr();
+    if (this.isKw('GROUP')) { this.i++; this.needKw('BY'); q.group = [this.expr()]; while (this.eatOp(',')) q.group.push(this.expr()); }
+    if (this.eatKw('HAVING')) q.having = this.expr();
+    if (this.isKw('ORDER')) {
+      this.i++; this.needKw('BY'); q.order = [];
+      do {
+        var nt = this.peek();
+        if (nt && nt.t === 'kw' && (nt.v === 'DESC' || nt.v === 'ASC')) err('no such column: ' + nt.raw.toLowerCase());
+        var oe = this.expr(), desc = false;
+        if (this.eatKw('DESC')) desc = true; else this.eatKw('ASC');
+        q.order.push({ e: oe, desc: desc });
+      } while (this.eatOp(','));
+    }
+    if (this.eatKw('LIMIT')) { var lt = this.peek(); if (!lt || lt.t !== 'num') err(this.near()); this.i++; q.limit = lt.v; if (this.eatKw('OFFSET')) { var ot = this.peek(); if (!ot || ot.t !== 'num') err(this.near()); this.i++; q.offset = ot.v; } }
+    return q;
+  };
+  P.tableRef = function () {
+    if (this.isOp('(') && this.isKw('SELECT', 1)) {
+      this.i++; var dq = this.compound(); this.needOp(')');
+      var da = null; if (this.eatKw('AS')) da = this.ident(); else if (this.peek() && this.peek().t === 'id') da = this.ident();
+      if (!da) err('subquery in FROM must have an alias');
+      return { derived: dq, name: da, alias: da };
+    }
+    var name = this.ident(), alias = null;
+    if (this.eatKw('AS')) alias = this.ident(); else if (this.peek() && this.peek().t === 'id') alias = this.ident();
+    return { name: name, alias: alias || name };
+  };
+  P.insert = function () {
+    this.needKw('INSERT'); this.needKw('INTO');
+    var name = this.ident(), cols = null;
+    if (this.eatOp('(')) { cols = [this.ident()]; while (this.eatOp(',')) cols.push(this.ident()); this.needOp(')'); }
+    if (this.isKw('SELECT')) return { k: 'insert', table: name, cols: cols, rows: null, sel: this.compound() };
+    this.needKw('VALUES');
+    var rows = [];
+    do { this.needOp('('); var r = [this.expr()]; while (this.eatOp(',')) r.push(this.expr()); this.needOp(')'); rows.push(r); } while (this.eatOp(','));
+    return { k: 'insert', table: name, cols: cols, rows: rows };
+  };
+  P.update = function () {
+    this.needKw('UPDATE'); var name = this.ident(); this.needKw('SET');
+    var sets = [];
+    do { var c = this.ident(); this.needOp('='); sets.push({ col: c, e: this.expr() }); } while (this.eatOp(','));
+    var where = null; if (this.eatKw('WHERE')) where = this.expr();
+    return { k: 'update', table: name, sets: sets, where: where };
+  };
+  P.del = function () {
+    this.needKw('DELETE'); this.needKw('FROM'); var name = this.ident();
+    var where = null; if (this.eatKw('WHERE')) where = this.expr();
+    return { k: 'delete', table: name, where: where };
+  };
+
+  // 표현식
+  P.expr = function () { return this.orE(); };
+  P.orE = function () { var l = this.andE(); while (this.eatKw('OR')) l = { k: 'bin', op: 'OR', l: l, r: this.andE() }; return l; };
+  P.andE = function () { var l = this.notE(); while (this.eatKw('AND')) l = { k: 'bin', op: 'AND', l: l, r: this.notE() }; return l; };
+  P.notE = function () {
+    if (this.eatKw('NOT')) return { k: 'not', e: this.notE() };
+    if (this.isKw('EXISTS')) { this.i++; this.needOp('('); var xq = this.compound(); this.needOp(')'); return { k: 'exists', sub: xq }; }
+    return this.cmpE();
+  };
+  P.cmpE = function () {
+    var l = this.addE();
+    for (;;) {
+      var t = this.peek(); if (!t) return l;
+      if (t.t === 'op' && ['=', '<>', '!=', '<', '>', '<=', '>='].indexOf(t.v) >= 0) { this.i++; l = { k: 'bin', op: t.v === '!=' ? '<>' : t.v, l: l, r: this.addE() }; continue; }
+      if (this.isKw('IS')) { this.i++; var neg = this.eatKw('NOT'); this.needKw('NULL'); l = { k: 'isnull', e: l, neg: neg }; continue; }
+      var neg2 = false, save = this.i;
+      if (this.isKw('NOT') && (this.isKw('IN', 1) || this.isKw('LIKE', 1) || this.isKw('BETWEEN', 1))) { this.i++; neg2 = true; }
+      if (this.eatKw('IN')) {
+        this.needOp('(');
+        if (this.isKw('SELECT')) { var sq = this.compound(); this.needOp(')'); l = { k: 'in', e: l, sub: sq, neg: neg2 }; }
+        else { var list = [this.expr()]; while (this.eatOp(',')) list.push(this.expr()); this.needOp(')'); l = { k: 'in', e: l, list: list, neg: neg2 }; }
+        continue;
+      }
+      if (this.eatKw('LIKE')) { l = { k: 'like', e: l, p: this.addE(), neg: neg2 }; continue; }
+      if (this.eatKw('BETWEEN')) { var lo = this.addE(); this.needKw('AND'); var hi = this.addE(); l = { k: 'between', e: l, lo: lo, hi: hi, neg: neg2 }; continue; }
+      this.i = save; return l;
+    }
+  };
+  P.addE = function () {
+    var l = this.mulE();
+    for (;;) { var t = this.peek(); if (t && t.t === 'op' && (t.v === '+' || t.v === '-' || t.v === '||')) { this.i++; l = { k: 'bin', op: t.v, l: l, r: this.mulE() }; } else return l; }
+  };
+  P.mulE = function () {
+    var l = this.unE();
+    for (;;) { var t = this.peek(); if (t && t.t === 'op' && (t.v === '*' || t.v === '/' || t.v === '%')) { this.i++; l = { k: 'bin', op: t.v, l: l, r: this.unE() }; } else return l; }
+  };
+  P.unE = function () { if (this.eatOp('-')) return { k: 'neg', e: this.unE() }; if (this.eatOp('+')) return this.unE(); return this.prim(); };
+  P.prim = function () {
+    var t = this.peek(); if (!t) err('incomplete input');
+    if (t.t === 'num') { this.i++; return { k: 'lit', v: t.v, f: t.f }; }
+    if (t.t === 'str') { this.i++; return { k: 'lit', v: t.v }; }
+    if (t.t === 'kw' && t.v === 'NULL') { this.i++; return { k: 'lit', v: null }; }
+    if (t.t === 'op' && t.v === '(') {
+      this.i++;
+      if (this.isKw('SELECT')) { var ssq = this.compound(); this.needOp(')'); return { k: 'sub', q: ssq }; }
+      var e = this.expr(); this.needOp(')'); return e;
+    }
+    if (t.t === 'kw' && t.v === 'CASE') {
+      this.i++; var base = null; if (!this.isKw('WHEN')) base = this.expr();
+      var whens = [];
+      while (this.eatKw('WHEN')) { var wc = this.expr(); this.needKw('THEN'); whens.push({ c: wc, v: this.expr() }); }
+      var els = null; if (this.eatKw('ELSE')) els = this.expr();
+      this.needKw('END'); return { k: 'case', base: base, whens: whens, els: els };
+    }
+    if (t.t === 'id') {
+      this.i++;
+      var up = t.v.toUpperCase();
+      if (this.isOp('(') && !t.q) {
+        this.i++;
+        if (AGG[up]) {
+          var node = { k: 'agg', fn: up, distinct: false, arg: null, text: '' };
+          if (this.isOp('*')) { if (up !== 'COUNT') err(this.near()); this.i++; }
+          else { if (this.eatKw('DISTINCT')) node.distinct = true; node.arg = this.expr(); }
+          this.needOp(')'); return node;
+        }
+        var args = []; if (!this.isOp(')')) { args.push(this.expr()); while (this.eatOp(',')) args.push(this.expr()); }
+        this.needOp(')');
+        return { k: 'fn', fn: up, args: args };
+      }
+      if (this.isOp('.')) { this.i++; var c = this.peek(); if (c && c.t === 'op' && c.v === '*') err(this.near()); var cn = this.ident(); return { k: 'col', tbl: t.v, name: cn }; }
+      return { k: 'col', tbl: null, name: t.v };
+    }
+    err(this.near());
+  };
+
+  // 값 비교
+  function typeRank(v) { return v === null ? 0 : (typeof v === 'number' ? 1 : 2); }
+  function cmp(a, b) {
+    var ra = typeRank(a), rb = typeRank(b);
+    if (ra !== rb) return ra < rb ? -1 : 1;
+    if (a === b) return 0; return a < b ? -1 : 1;
+  }
+  function truthy(v) { return v !== null && v !== undefined && v !== 0 && v !== '' && v !== false; }
+  function num(v) { if (v === null) return null; if (typeof v === 'number') return v; var n = parseFloat(v); return isNaN(n) ? 0 : n; }
+  function likeRe(p) { return new RegExp('^' + p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/%/g, '.*').replace(/_/g, '.') + '$', 'is'); }
+
+  function DB(tables) { this.tables = tables; }
+  DB.prototype.clone = function () { var o = {}; for (var k in this.tables) o[k] = { cols: this.tables[k].cols.slice(), rows: this.tables[k].rows.map(function (r) { return r.slice(); }) }; return new DB(o); };
+  DB.prototype.table = function (name) {
+    for (var k in this.tables) if (k.toLowerCase() === name.toLowerCase()) return { name: k, t: this.tables[k] };
+    err('no such table: ' + name);
+  };
+
+  // 실행
+  function Exec(db) { this.db = db; }
+  var E = Exec.prototype;
+
+  E.colLookup = function (scope, e) {
+    // scope: { aliases: [{alias, cols}], row: {alias: [values]|null} }
+    var found = [], i, j;
+    for (i = 0; i < scope.aliases.length; i++) {
+      var a = scope.aliases[i];
+      if (e.tbl && a.alias.toLowerCase() !== e.tbl.toLowerCase()) continue;
+      for (j = 0; j < a.cols.length; j++) if (a.cols[j].toLowerCase() === e.name.toLowerCase()) found.push([a.alias, j]);
+    }
+    if (!found.length && scope.outer) return this.colLookup(scope.outer, e);
+    if (!found.length) err('no such column: ' + (e.tbl ? e.tbl + '.' : '') + e.name);
+    if (found.length > 1) err('ambiguous column name: ' + e.name);
+    return [found[0][0], found[0][1], scope];
+  };
+  E.ev = function (e, scope, ctx) {
+    // ctx: { group: rows[]|null, allowAgg, out: {name: value}|null }
+    var self = this;
+    switch (e.k) {
+      case 'lit': return e.v;
+      case 'col': {
+        if (ctx.out && !e.tbl && Object.prototype.hasOwnProperty.call(ctx.out, e.name.toLowerCase()) && !ctx.preferCols) return ctx.out[e.name.toLowerCase()];
+        var f;
+        try { f = this.colLookup(scope, e); } catch (ex) {
+          if (ctx.out && !e.tbl && Object.prototype.hasOwnProperty.call(ctx.out, e.name.toLowerCase())) return ctx.out[e.name.toLowerCase()];
+          throw ex;
+        }
+        var row = f[2].row[f[0]]; return row ? row[f[1]] : null;
+      }
+      case 'neg': { var v = this.ev(e.e, scope, ctx); return v === null ? null : -num(v); }
+      case 'not': { var nv = this.ev(e.e, scope, ctx); return nv === null ? null : (truthy(nv) ? 0 : 1); }
+      case 'isnull': { var iv = this.ev(e.e, scope, ctx); return (iv === null) !== e.neg ? 1 : 0; }
+      case 'bin': {
+        if (e.op === 'AND') { var a = this.ev(e.l, scope, ctx); if (a !== null && !truthy(a)) return 0; var b = this.ev(e.r, scope, ctx); if (b !== null && !truthy(b)) return 0; return (a === null || b === null) ? null : 1; }
+        if (e.op === 'OR') { var a2 = this.ev(e.l, scope, ctx); if (a2 !== null && truthy(a2)) return 1; var b2 = this.ev(e.r, scope, ctx); if (b2 !== null && truthy(b2)) return 1; return (a2 === null || b2 === null) ? null : 0; }
+        var l = this.ev(e.l, scope, ctx), r = this.ev(e.r, scope, ctx);
+        if (l === null || r === null) return null;
+        switch (e.op) {
+          case '=': return cmp(l, r) === 0 ? 1 : 0;
+          case '<>': return cmp(l, r) !== 0 ? 1 : 0;
+          case '<': return cmp(l, r) < 0 ? 1 : 0;
+          case '>': return cmp(l, r) > 0 ? 1 : 0;
+          case '<=': return cmp(l, r) <= 0 ? 1 : 0;
+          case '>=': return cmp(l, r) >= 0 ? 1 : 0;
+          case '+': return num(l) + num(r);
+          case '-': return num(l) - num(r);
+          case '*': return num(l) * num(r);
+          case '/': { var d = num(r); if (d === 0) return null; var q = num(l) / d; return (Number.isInteger(num(l)) && Number.isInteger(d) && !(e.l.f || e.r.f)) ? Math.trunc(q) : q; }
+          case '%': { var m = num(r); if (m === 0) return null; return num(l) % m; }
+          case '||': return String(l) + String(r);
+        }
+        break;
+      }
+      case 'between': { var bv = this.ev(e.e, scope, ctx), lo = this.ev(e.lo, scope, ctx), hi = this.ev(e.hi, scope, ctx); if (bv === null || lo === null || hi === null) return null; var inr = cmp(bv, lo) >= 0 && cmp(bv, hi) <= 0; return inr !== e.neg ? 1 : 0; }
+      case 'like': { var s = this.ev(e.e, scope, ctx), p = this.ev(e.p, scope, ctx); if (s === null || p === null) return null; var mm = likeRe(String(p)).test(String(s)); return mm !== e.neg ? 1 : 0; }
+      case 'in': {
+        var iv2 = this.ev(e.e, scope, ctx); if (iv2 === null) return null;
+        var vals;
+        if (e.sub) { var res = this.compoundRun(e.sub, scope); if (res.cols.length !== 1) err('sub-select returns ' + res.cols.length + ' columns - expected 1'); vals = res.rows.map(function (r0) { return r0[0]; }); }
+        else vals = e.list.map(function (x) { return self.ev(x, scope, ctx); });
+        var hit = false, sawNull = false;
+        vals.forEach(function (x) { if (x === null) sawNull = true; else if (cmp(iv2, x) === 0) hit = true; });
+        if (hit) return e.neg ? 0 : 1; if (sawNull) return null; return e.neg ? 1 : 0;
+      }
+      case 'sub': { var sres = this.compoundRun(e.q, scope); if (sres.cols.length !== 1) err('sub-select returns ' + sres.cols.length + ' columns - expected 1'); return sres.rows.length ? sres.rows[0][0] : null; }
+      case 'exists': { var xres = this.compoundRun(e.sub, scope); return xres.rows.length ? 1 : 0; }
+      case 'case': {
+        var bv0 = e.base ? this.ev(e.base, scope, ctx) : null;
+        for (var wi = 0; wi < e.whens.length; wi++) {
+          var cv = this.ev(e.whens[wi].c, scope, ctx);
+          var hitc = e.base ? (bv0 !== null && cv !== null && cmp(bv0, cv) === 0) : (cv !== null && truthy(cv));
+          if (hitc) return this.ev(e.whens[wi].v, scope, ctx);
+        }
+        return e.els ? this.ev(e.els, scope, ctx) : null;
+      }
+      case 'agg': {
+        if (!ctx.allowAgg) err('misuse of aggregate: ' + e.fn.toLowerCase() + '()');
+        if (!ctx.group) err('misuse of aggregate: ' + e.fn.toLowerCase() + '()');
+        var vals2;
+        if (e.arg === null) return ctx.group.length;
+        vals2 = ctx.group.map(function (rw) { return self.ev(e.arg, { outer: scope.outer, aliases: scope.aliases, row: rw }, { group: null, allowAgg: false, out: null }); }).filter(function (x) { return x !== null; });
+        if (e.distinct) { var seen = {}, u = []; vals2.forEach(function (x) { var k = typeof x + ':' + x; if (!seen[k]) { seen[k] = 1; u.push(x); } }); vals2 = u; }
+        if (e.fn === 'COUNT') return vals2.length;
+        if (!vals2.length) return null;
+        if (e.fn === 'SUM') return vals2.reduce(function (s0, x) { return s0 + num(x); }, 0);
+        if (e.fn === 'AVG') return vals2.reduce(function (s0, x) { return s0 + num(x); }, 0) / vals2.length;
+        if (e.fn === 'MAX') return vals2.reduce(function (m0, x) { return cmp(x, m0) > 0 ? x : m0; });
+        if (e.fn === 'MIN') return vals2.reduce(function (m0, x) { return cmp(x, m0) < 0 ? x : m0; });
+        break;
+      }
+      case 'fn': {
+        var args = e.args.map(function (x) { return self.ev(x, scope, ctx); });
+        switch (e.fn) {
+          case 'UPPER': return args[0] === null ? null : String(args[0]).toUpperCase();
+          case 'LOWER': return args[0] === null ? null : String(args[0]).toLowerCase();
+          case 'LENGTH': return args[0] === null ? null : String(args[0]).length;
+          case 'ABS': return args[0] === null ? null : Math.abs(num(args[0]));
+          case 'ROUND': { if (args[0] === null) return null; var dg = args[1] ? num(args[1]) : 0; var f10 = Math.pow(10, dg); return Math.round(num(args[0]) * f10) / f10; }
+          case 'COALESCE': case 'IFNULL': for (var i = 0; i < args.length; i++) if (args[i] !== null) return args[i]; return null;
+          case 'SUBSTR': { if (args[0] === null) return null; var st = num(args[1]) - 1; return args[2] === undefined ? String(args[0]).slice(st) : String(args[0]).substr(st, num(args[2])); }
+        }
+        err('no such function: ' + e.fn.toLowerCase());
+      }
+    }
+    err('unsupported expression');
+  };
+  function hasAgg(e) {
+    if (!e || typeof e !== 'object') return false;
+    if (e.k === 'agg') return true;
+    if (e.k === 'in' && e.sub) return hasAgg(e.e);
+    if (e.k === 'sub' || e.k === 'exists') return false;
+    if (e.k === 'case') { var rc = hasAgg(e.base); e.whens.forEach(function (w) { if (hasAgg(w.c) || hasAgg(w.v)) rc = true; }); if (hasAgg(e.els)) rc = true; return rc; }
+    var r = false;
+    ['e', 'l', 'r', 'lo', 'hi', 'p'].forEach(function (k) { if (e[k] && hasAgg(e[k])) r = true; });
+    if (e.list) e.list.forEach(function (x) { if (hasAgg(x)) r = true; });
+    if (e.args) e.args.forEach(function (x) { if (hasAgg(x)) r = true; });
+    return r;
+  }
+
+  E.select = function (q, outer) {
+    var self = this, aliases = [], rows;
+    if (!q.from.length) { aliases = []; rows = [{}]; }
+    else {
+      var t0 = this.resolveRef(q.from[0], outer);
+      aliases.push({ alias: q.from[0].alias, cols: t0.t.cols });
+      rows = t0.t.rows.map(function (r) { var o = {}; o[q.from[0].alias] = r; return o; });
+      q.joins.forEach(function (j) {
+        var tj = self.resolveRef(j.ref, outer);
+        if (aliases.some(function (a) { return a.alias.toLowerCase() === j.ref.alias.toLowerCase(); })) err('ambiguous table alias: ' + j.ref.alias);
+        aliases.push({ alias: j.ref.alias, cols: tj.t.cols });
+        var next = [], rmatched = new Array(tj.t.rows.length);
+        rows.forEach(function (lr) {
+          var matched = false;
+          tj.t.rows.forEach(function (rr, rri) {
+            var combo = Object.assign({}, lr); combo[j.ref.alias] = rr;
+            if (j.on === null) { next.push(combo); matched = true; rmatched[rri] = true; return; }
+            var ok = self.ev(j.on, { outer: outer, aliases: aliases, row: combo }, { group: null, allowAgg: false, out: null });
+            if (ok !== null && truthy(ok)) { next.push(combo); matched = true; rmatched[rri] = true; }
+          });
+          if (!matched && (j.type === 'LEFT' || j.type === 'FULL')) { var combo2 = Object.assign({}, lr); combo2[j.ref.alias] = null; next.push(combo2); }
+        });
+        if (j.type === 'RIGHT' || j.type === 'FULL') {
+          tj.t.rows.forEach(function (rr, rri) {
+            if (rmatched[rri]) return;
+            var c3 = {}; aliases.forEach(function (a) { c3[a.alias] = null; }); c3[j.ref.alias] = rr; next.push(c3);
+          });
+        }
+        rows = next;
+      });
+    }
+    var scope0 = { outer: outer, aliases: aliases, row: {} };
+    if (q.where) {
+      rows = rows.filter(function (rw) { var v = self.ev(q.where, { outer: outer, aliases: aliases, row: rw }, { group: null, allowAgg: false, out: null }); return v !== null && truthy(v); });
+    }
+    // 출력 열 이름 확장
+    var outCols = [];
+    q.cols.forEach(function (c) {
+      if (c.star) {
+        aliases.forEach(function (a) { if (c.tbl && a.alias.toLowerCase() !== c.tbl.toLowerCase()) return; a.cols.forEach(function (cn, idx) { outCols.push({ name: cn, e: { k: 'col', tbl: a.alias, name: cn } }); }); });
+        if (c.tbl && !aliases.some(function (a) { return a.alias.toLowerCase() === c.tbl.toLowerCase(); })) err('no such table: ' + c.tbl);
+      } else outCols.push({ name: c.alias || (c.e.k === 'col' ? c.e.name : c.text), e: c.e, alias: c.alias });
+    });
+    var aggMode = !!q.group || outCols.some(function (c) { return hasAgg(c.e); }) || hasAgg(q.having) || (q.order || []).some(function (o) { return hasAgg(o.e); });
+    var result = [];
+    function project(rw, grp) {
+      var sc = { outer: outer, aliases: aliases, row: rw };
+      var ctx = { group: grp, allowAgg: !!grp, out: null };
+      var vals = outCols.map(function (c) { return self.ev(c.e, sc, ctx); });
+      var out = {};
+      outCols.forEach(function (c, i) { if (!Object.prototype.hasOwnProperty.call(out, c.name.toLowerCase())) out[c.name.toLowerCase()] = vals[i]; });
+      return { vals: vals, sc: sc, grp: grp, out: out };
+    }
+    if (aggMode) {
+      var groups = [];
+      if (q.group) {
+        var map = {};
+        rows.forEach(function (rw) {
+          var key = JSON.stringify(q.group.map(function (g) { return self.ev(g, { outer: outer, aliases: aliases, row: rw }, { group: null, allowAgg: false, out: null }); }));
+          if (!map[key]) { map[key] = { key: JSON.parse(key), rows: [] }; groups.push(map[key]); }
+          map[key].rows.push(rw);
+        });
+        groups.sort(function (a, b) { for (var i = 0; i < a.key.length; i++) { var c = cmp(a.key[i], b.key[i]); if (c) return c; } return 0; });
+      } else groups = [{ rows: rows }];
+      groups.forEach(function (g) {
+        var first = g.rows.length ? g.rows[0] : {};
+        aliases.forEach(function (a) { if (!(a.alias in first)) first[a.alias] = null; });
+        if (q.having) { var hv = self.ev(q.having, { outer: outer, aliases: aliases, row: first }, { group: g.rows, allowAgg: true, out: null }); if (hv === null || !truthy(hv)) return; }
+        // 그룹 행들이 평가 대상: ev(agg)에서 ctx.group의 각 항목은 rowmap
+        result.push(project(first, g.rows));
+      });
+    } else {
+      rows.forEach(function (rw) { result.push(project(rw, null)); });
+    }
+    if (q.order) {
+      var keyed = result.map(function (r, idx) {
+        var ks = q.order.map(function (o) {
+          if (o.e.k === 'lit' && typeof o.e.v === 'number') { var p = o.e.v - 1; if (p < 0 || p >= r.vals.length) err('ORDER BY term out of range - should be between 1 and ' + r.vals.length); return r.vals[p]; }
+          return self.ev(o.e, r.sc, { group: r.grp, allowAgg: !!r.grp, out: r.out });
+        });
+        return { r: r, ks: ks, idx: idx };
+      });
+      keyed.sort(function (a, b) { for (var i = 0; i < q.order.length; i++) { var c = cmp(a.ks[i], b.ks[i]); if (c) return q.order[i].desc ? -c : c; } return a.idx - b.idx; });
+      result = keyed.map(function (k) { return k.r; });
+    }
+    var outRows = result.map(function (r) { return r.vals; });
+    if (q.distinct) { var seen = {}; outRows = outRows.filter(function (r) { var k = JSON.stringify(r); if (seen[k]) return false; seen[k] = 1; return true; }); }
+    if (q.offset) outRows = outRows.slice(q.offset);
+    if (q.limit !== null) outRows = outRows.slice(0, q.limit);
+    return { cols: outCols.map(function (c) { return c.name; }), rows: outRows };
+  };
+  E.resolveRef = function (ref, outer) {
+    if (ref.derived) { var dr = this.compoundRun(ref.derived, outer); return { name: ref.name, t: { cols: dr.cols, rows: dr.rows } }; }
+    var views = this.db.views || {};
+    for (var vk in views) if (vk.toLowerCase() === ref.name.toLowerCase()) { var vr = this.compoundRun(views[vk], null); return { name: vk, t: { cols: vr.cols, rows: vr.rows } }; }
+    return this.db.table(ref.name);
+  };
+  function distinctRows(rows) { var seen = {}; return rows.filter(function (r) { var k = JSON.stringify(r); if (seen[k]) return false; seen[k] = 1; return true; }); }
+  E.compoundRun = function (c, outer) {
+    if (c.k !== 'compound') return this.select(c, outer);
+    var res = this.select(c.first, outer), cols = res.cols, rows = res.rows;
+    for (var i = 0; i < c.ops.length; i++) {
+      var o = c.ops[i], r2 = this.select(o.q, outer);
+      if (r2.cols.length !== cols.length) err('SELECTs to the left and right of ' + o.op + ' do not have the same number of result columns');
+      if (o.op === 'UNION') rows = o.all ? rows.concat(r2.rows) : distinctRows(rows.concat(r2.rows));
+      else {
+        var set2 = {}; r2.rows.forEach(function (r) { set2[JSON.stringify(r)] = 1; });
+        if (o.op === 'INTERSECT') rows = distinctRows(rows.filter(function (r) { return set2[JSON.stringify(r)]; }));
+        else rows = distinctRows(rows.filter(function (r) { return !set2[JSON.stringify(r)]; }));
+      }
+    }
+    if (c.order) {
+      var self = this, idxs = c.order.map(function (o) {
+        if (o.e.k === 'lit' && typeof o.e.v === 'number') return o.e.v - 1;
+        var ix = cols.findIndex(function (cn) { return o.e.k === 'col' && cn.toLowerCase() === o.e.name.toLowerCase(); });
+        if (ix < 0) err('1st ORDER BY term does not match any column in the result set'); return ix;
+      });
+      rows = rows.map(function (r, n) { return { r: r, n: n }; }).sort(function (a, b) { for (var i = 0; i < idxs.length; i++) { var cc = cmp(a.r[idxs[i]], b.r[idxs[i]]); if (cc) return c.order[i].desc ? -cc : cc; } return a.n - b.n; }).map(function (x) { return x.r; });
+    }
+    if (c.offset) rows = rows.slice(c.offset);
+    if (c.limit !== null && c.limit !== undefined) rows = rows.slice(0, c.limit);
+    return { cols: cols, rows: rows };
+  };
+  // aggregate: group rows are rowmaps — adapt ev for agg (scope.row ignored)
+  E.exec = function (st) {
+    var self = this;
+    switch (st.k) {
+      case 'select': case 'compound': return this.compoundRun(st, null);
+      case 'tx': return { msg: st.v + ' 실행 (이 실습에서는 연습용이라 변화가 없어요)' };
+      case 'insert': {
+        var t = this.db.table(st.table).t, n = 0;
+        var idxs = st.cols ? st.cols.map(function (c) { var i = t.cols.findIndex(function (x) { return x.toLowerCase() === c.toLowerCase(); }); if (i < 0) err('table ' + st.table + ' has no column named ' + c); return i; }) : t.cols.map(function (c, i) { return i; });
+        var srcRows = st.rows;
+        if (!srcRows) srcRows = this.compoundRun(st.sel, null).rows.map(function (vals) { return vals.map(function (v) { return { k: 'lit', v: v }; }); });
+        srcRows.forEach(function (r) {
+          if (r.length !== idxs.length) err(st.cols ? (r.length + ' values for ' + idxs.length + ' columns') : ('table ' + st.table + ' has ' + t.cols.length + ' columns but ' + r.length + ' values were supplied'));
+          var row = t.cols.map(function () { return null; });
+          r.forEach(function (e, i) { row[idxs[i]] = self.ev(e, { aliases: [], row: {} }, { group: null, allowAgg: false, out: null }); });
+          t.rows.push(row); n++;
+        });
+        return { msg: n + '행이 추가되었어요.', changes: n };
+      }
+      case 'update': {
+        var tu = this.db.table(st.table).t, nu = 0, al = [{ alias: st.table, cols: tu.cols }];
+        var sidx = st.sets.map(function (s) { var i = tu.cols.findIndex(function (x) { return x.toLowerCase() === s.col.toLowerCase(); }); if (i < 0) err('no such column: ' + s.col); return i; });
+        tu.rows.forEach(function (r) {
+          var rw = {}; rw[st.table] = r;
+          if (st.where) { var w = self.ev(st.where, { aliases: al, row: rw }, { group: null, allowAgg: false, out: null }); if (w === null || !truthy(w)) return; }
+          var nv = st.sets.map(function (s) { return self.ev(s.e, { aliases: al, row: rw }, { group: null, allowAgg: false, out: null }); });
+          nv.forEach(function (v, i) { r[sidx[i]] = v; }); nu++;
+        });
+        return { msg: nu + '행이 수정되었어요.', changes: nu };
+      }
+      case 'delete': {
+        var td = this.db.table(st.table).t, al2 = [{ alias: st.table, cols: td.cols }], keep = [], nd = 0;
+        td.rows.forEach(function (r) {
+          var rw = {}; rw[st.table] = r;
+          var hit = true;
+          if (st.where) { var w = self.ev(st.where, { aliases: al2, row: rw }, { group: null, allowAgg: false, out: null }); hit = (w !== null && truthy(w)); }
+          if (hit) nd++; else keep.push(r);
+        });
+        td.rows = keep;
+        return { msg: nd + '행이 삭제되었어요.', changes: nd };
+      }
+    }
+  };
+
+  // 집계 평가용 보정: ev 'agg'에서 group 항목(rowmap)을 사용
+  function run(db, sql) {
+    var stmts = new Parser(sql).statements();
+    var ex = new Exec(db), last = null;
+    stmts.forEach(function (s) { last = ex.exec(s); });
+    return last;
+  }
+  root.MiniSQL = { DB: DB, run: run, Parser: Parser, SqlError: SqlError, tokenize: tokenize };
+  
+})(typeof window !== 'undefined' ? window : globalThis);
+
+;
+/* SQL 실습 세션: MiniSQL 위에 DDL·제약조건·뷰·트랜잭션·권한을 얹은 학습용 래퍼 */
+(function (root) {
+'use strict';
+var M = root.MiniSQL;
+function LabError(msg) { this.message = msg; }
+LabError.prototype = Object.create(Error.prototype);
+function fail(m) { throw new LabError(m); }
+
+/* ---------- 문장 분리 ---------- */
+function splitStatements(sql) {
+  var out = [], cur = '', i = 0, n = sql.length, q = null;
+  while (i < n) {
+    var c = sql[i], d = sql[i + 1];
+    if (q) { cur += c; if (c === q) { if (d === q) { cur += d; i += 2; continue; } q = null; } i++; continue; }
+    if (c === "'" || c === '"') { q = c; cur += c; i++; continue; }
+    if (c === '-' && d === '-') { while (i < n && sql[i] !== '\n') i++; continue; }
+    if (c === '/' && d === '*') { i += 2; while (i < n && !(sql[i] === '*' && sql[i + 1] === '/')) i++; i += 2; continue; }
+    if (c === ';') { if (cur.trim()) out.push(cur.trim()); cur = ''; i++; continue; }
+    cur += c; i++;
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out;
+}
+function splitTop(s, sep) {
+  var out = [], depth = 0, q = null, cur = '';
+  for (var i = 0; i < s.length; i++) {
+    var c = s[i];
+    if (q) { cur += c; if (c === q) q = null; continue; }
+    if (c === "'" || c === '"') { q = c; cur += c; continue; }
+    if (c === '(') depth++; if (c === ')') depth--;
+    if (c === sep && depth === 0) { out.push(cur.trim()); cur = ''; continue; }
+    cur += c;
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out;
+}
+function unq(s) { s = s.trim(); if ((s[0] === '"' && s[s.length - 1] === '"')) return s.slice(1, -1); return s; }
+function lc(s) { return String(s).toLowerCase(); }
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+/* ---------- 세션 ---------- */
+function Session(opts) {
+  opts = opts || {};
+  this.db = new M.DB({}); this.db.views = {};
+  this.meta = {}; this.viewText = {}; this.indexes = {};
+  this.priv = []; this.user = '관리자'; this.log = []; this.sp = [];
+  this.base = null; this.pending = 0; this.inTx = false;
+  this.commitBase();
+}
+var S = Session.prototype;
+S.snap = function () {
+  var t = {}; for (var k in this.db.tables) t[k] = { cols: this.db.tables[k].cols.slice(), rows: this.db.tables[k].rows.map(function (r) { return r.slice(); }) };
+  return { tables: t, meta: clone(this.meta), views: Object.assign({}, this.viewText), indexes: clone(this.indexes), priv: clone(this.priv) };
+};
+S.restore = function (sn) {
+  this.db = new M.DB(clone(sn.tables)); this.db.views = {}; this.meta = clone(sn.meta); this.viewText = Object.assign({}, sn.views); this.indexes = clone(sn.indexes); this.priv = clone(sn.priv);
+  for (var v in this.viewText) this.db.views[v] = new M.Parser(this.viewText[v]).compound();
+};
+S.commitBase = function () { this.base = this.snap(); this.pending = 0; this.sp = []; this.inTx = false; };
+S.clone = function () { var c = new Session(); c.restore(this.snap()); c.user = this.user; c.base = this.base; c.pending = this.pending; c.inTx = this.inTx; return c; };
+S.tableKey = function (name) { for (var k in this.db.tables) if (lc(k) === lc(name)) return k; return null; };
+S.needTable = function (name) { var k = this.tableKey(unq(name)); if (!k) fail('no such table: ' + unq(name) + ' — 그런 이름의 테이블이 없어요'); return k; };
+S.colIndex = function (t, c) { var cols = this.db.tables[t].cols; for (var i = 0; i < cols.length; i++) if (lc(cols[i]) === lc(unq(c))) return i; fail('no such column: ' + unq(c) + ' — ' + t + ' 테이블에 그런 열이 없어요'); };
+
+/* ---------- CREATE TABLE 해석 ---------- */
+function parseColDef(def) {
+  var m = /^("[^"]+"|[^\s(]+)\s*([A-Za-z]+(?:\s*\(\s*\d+\s*(?:,\s*\d+\s*)?\))?)?\s*(.*)$/is.exec(def.trim());
+  if (!m) fail('열 정의를 읽을 수 없어요: ' + def);
+  var col = { name: unq(m[1]), type: (m[2] || '').replace(/\s+/g, '').toUpperCase(), pk: false, nn: false, uq: false, def: undefined, chk: [], fk: null };
+  var rest = m[3] || '', mm;
+  while (rest.trim()) {
+    rest = rest.trim();
+    if ((mm = /^PRIMARY\s+KEY\b/i.exec(rest))) { col.pk = true; col.nn = true; rest = rest.slice(mm[0].length); }
+    else if ((mm = /^NOT\s+NULL\b/i.exec(rest))) { col.nn = true; rest = rest.slice(mm[0].length); }
+    else if ((mm = /^NULL\b/i.exec(rest))) { rest = rest.slice(mm[0].length); }
+    else if ((mm = /^UNIQUE\b/i.exec(rest))) { col.uq = true; rest = rest.slice(mm[0].length); }
+    else if ((mm = /^CONSTRAINT\s+\S+\s*/i.exec(rest))) { rest = rest.slice(mm[0].length); }
+    else if ((mm = /^DEFAULT\s+('(?:[^']|'')*'|-?\d+(?:\.\d+)?|NULL|[A-Za-z_]+(?:\(\))?)/i.exec(rest))) { col.def = mm[1]; rest = rest.slice(mm[0].length); }
+    else if ((mm = /^CHECK\s*\(/i.exec(rest))) {
+      var depth = 1, i = mm[0].length; while (i < rest.length && depth) { if (rest[i] === '(') depth++; else if (rest[i] === ')') depth--; i++; }
+      col.chk.push(rest.slice(mm[0].length, i - 1).trim()); rest = rest.slice(i);
+    }
+    else if ((mm = /^REFERENCES\s+("[^"]+"|[^\s(]+)\s*(?:\(\s*([^)]+)\))?/i.exec(rest))) { col.fk = { ref: unq(mm[1]), rcols: mm[2] ? [unq(mm[2].trim())] : null }; rest = rest.slice(mm[0].length); }
+    else if ((mm = /^AUTO_INCREMENT\b|^AUTOINCREMENT\b/i.exec(rest))) { rest = rest.slice(mm[0].length); }
+    else fail('near "' + rest.split(/\s/)[0] + '": syntax error');
+  }
+  return col;
+}
+function defVal(sess, d) {
+  if (d === undefined) return null;
+  if (/^null$/i.test(d)) return null;
+  if (d[0] === "'") return d.slice(1, -1).replace(/''/g, "'");
+  if (/^-?\d/.test(d)) return parseFloat(d);
+  if (/^(CURRENT_DATE|SYSDATE|NOW)/i.test(d)) { var t = new Date(); return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); }
+  return d;
+}
+S.createTable = function (sql) {
+  var m = /^CREATE\s+TABLE\s+(IF\s+NOT\s+EXISTS\s+)?("[^"]+"|[^\s(]+)\s*\(([\s\S]*)\)\s*$/i.exec(sql);
+  if (!m) fail('CREATE TABLE 문법을 확인해 보세요. 예: CREATE TABLE 이름 (열이름 자료형, ...)');
+  var name = unq(m[2]);
+  if (this.tableKey(name)) { if (m[1]) return { msg: name + ' 테이블이 이미 있어서 건너뛰었어요.' }; fail('table ' + name + ' already exists — 같은 이름의 테이블이 이미 있어요'); }
+  var defs = splitTop(m[3], ','), cols = [], tcons = [];
+  defs.forEach(function (d) {
+    if (/^(PRIMARY\s+KEY|UNIQUE|FOREIGN\s+KEY|CHECK|CONSTRAINT)\b/i.test(d)) tcons.push(d); else cols.push(parseColDef(d));
+  });
+  if (!cols.length) fail('열이 하나도 없어요');
+  var seen = {}; cols.forEach(function (c) { if (seen[lc(c.name)]) fail('duplicate column name: ' + c.name); seen[lc(c.name)] = 1; });
+  var meta = { cols: cols.map(function (c) { return { name: c.name, type: c.type, nn: c.nn, def: c.def }; }), pk: [], uq: [], chk: [], fk: [] };
+  cols.forEach(function (c) {
+    if (c.pk) meta.pk.push(c.name);
+    if (c.uq) meta.uq.push([c.name]);
+    c.chk.forEach(function (x) { meta.chk.push(x); });
+    if (c.fk) meta.fk.push({ cols: [c.name], ref: c.fk.ref, rcols: c.fk.rcols });
+  });
+  tcons.forEach(function (d) {
+    d = d.replace(/^CONSTRAINT\s+\S+\s+/i, '');
+    var mm;
+    if ((mm = /^PRIMARY\s+KEY\s*\(([^)]*)\)/i.exec(d))) { meta.pk = mm[1].split(',').map(function (x) { return unq(x.trim()); }); meta.pk.forEach(function (pc) { var cc = meta.cols.filter(function (c) { return lc(c.name) === lc(pc); })[0]; if (!cc) fail('no such column: ' + pc); cc.nn = true; }); }
+    else if ((mm = /^UNIQUE\s*\(([^)]*)\)/i.exec(d))) meta.uq.push(mm[1].split(',').map(function (x) { return unq(x.trim()); }));
+    else if ((mm = /^CHECK\s*\(([\s\S]*)\)\s*$/i.exec(d))) meta.chk.push(mm[1].trim());
+    else if ((mm = /^FOREIGN\s+KEY\s*\(([^)]*)\)\s*REFERENCES\s+("[^"]+"|[^\s(]+)\s*(?:\(([^)]*)\))?/i.exec(d))) meta.fk.push({ cols: mm[1].split(',').map(function (x) { return unq(x.trim()); }), ref: unq(mm[2]), rcols: mm[3] ? mm[3].split(',').map(function (x) { return unq(x.trim()); }) : null });
+    else fail('near "' + d.split(/\s/)[0] + '": syntax error');
+  });
+  var self = this;
+  meta.fk.forEach(function (f) {
+    var rk = lc(f.ref) === lc(name) ? name : self.tableKey(f.ref);
+    if (!rk) fail('FOREIGN KEY가 참조하는 테이블 ' + f.ref + ' 이(가) 아직 없어요. 참조되는 테이블을 먼저 만들어야 해요.');
+    if (!f.rcols) { var rm = rk === name ? meta : self.meta[rk]; f.rcols = rm.pk.length ? rm.pk.slice() : [ (rk === name ? meta : self.meta[rk]).cols[0].name ]; }
+    f.ref = rk;
+  });
+  this.db.tables[name] = { cols: cols.map(function (c) { return c.name; }), rows: [] };
+  this.meta[name] = meta;
+  return { msg: name + ' 테이블을 만들었어요. (열 ' + cols.length + '개)', ddl: true, table: name };
+};
+S.dropTable = function (sql) {
+  var m = /^DROP\s+TABLE\s+(IF\s+EXISTS\s+)?("[^"]+"|[^\s;]+)(\s+CASCADE(\s+CONSTRAINTS)?)?\s*$/i.exec(sql);
+  if (!m) fail('DROP TABLE 문법: DROP TABLE 테이블이름');
+  var k = this.tableKey(unq(m[2]));
+  if (!k) { if (m[1]) return { msg: '없는 테이블이라 건너뛰었어요.' }; fail('no such table: ' + unq(m[2])); }
+  var self = this, refd = Object.keys(this.meta).filter(function (t) { return t !== k && self.meta[t].fk.some(function (f) { return f.ref === k; }); });
+  if (refd.length && !m[3]) fail('FOREIGN KEY 때문에 지울 수 없어요: ' + refd.join(', ') + ' 테이블이 ' + k + '을(를) 참조하고 있어요. 참조하는 테이블을 먼저 지우세요.');
+  refd.forEach(function (t) { self.meta[t].fk = self.meta[t].fk.filter(function (f) { return f.ref !== k; }); });
+  delete this.db.tables[k]; delete this.meta[k];
+  return { msg: k + ' 테이블을 삭제했어요. (구조와 데이터가 모두 사라졌어요)', ddl: true };
+};
+S.truncate = function (sql) {
+  var m = /^TRUNCATE\s+(?:TABLE\s+)?("[^"]+"|\S+)\s*$/i.exec(sql); if (!m) fail('TRUNCATE TABLE 테이블이름');
+  var k = this.needTable(m[1]), self = this;
+  var refd = Object.keys(this.meta).filter(function (t) { return t !== k && self.meta[t].fk.some(function (f) { return f.ref === k; }) && self.db.tables[t].rows.length; });
+  if (refd.length) fail('FOREIGN KEY 때문에 비울 수 없어요: ' + refd.join(', ') + ' 테이블이 이 테이블을 참조하고 있어요.');
+  var n = this.db.tables[k].rows.length; this.db.tables[k].rows = [];
+  return { msg: k + ' 테이블의 모든 행(' + n + '개)을 비웠어요. 테이블 구조는 그대로 남아 있어요.', ddl: true, table: k };
+};
+S.alterTable = function (sql) {
+  var m = /^ALTER\s+TABLE\s+("[^"]+"|\S+)\s+([\s\S]+)$/i.exec(sql); if (!m) fail('ALTER TABLE 테이블이름 ADD|DROP|MODIFY ...');
+  var k = this.needTable(m[1]), rest = m[2].trim(), t = this.db.tables[k], meta = this.meta[k], mm, self = this;
+  if ((mm = /^ADD\s+(?:COLUMN\s+)?([\s\S]+)$/i.exec(rest)) && !/^(PRIMARY|FOREIGN|UNIQUE|CHECK|CONSTRAINT)\b/i.test(mm[1].trim())) {
+    var col = parseColDef(/^\(([\s\S]*)\)$/.test(mm[1].trim()) && mm[1].trim().indexOf('(', 1) < 0 ? mm[1].trim().slice(1, -1) : mm[1]);
+    if (t.cols.some(function (c) { return lc(c) === lc(col.name); })) fail('duplicate column name: ' + col.name);
+    if (col.nn && t.rows.length && col.def === undefined) fail('이미 데이터가 있는 테이블에는 DEFAULT 없이 NOT NULL 열을 추가할 수 없어요.');
+    t.cols.push(col.name); meta.cols.push({ name: col.name, type: col.type, nn: col.nn, def: col.def });
+    var dv = defVal(this, col.def); t.rows.forEach(function (r) { r.push(dv); });
+    if (col.uq) meta.uq.push([col.name]); col.chk.forEach(function (x) { meta.chk.push(x); });
+    return { msg: k + ' 테이블에 ' + col.name + ' 열을 추가했어요. (기존 행의 값은 ' + (dv === null ? 'NULL' : dv) + ')', ddl: true, table: k };
+  }
+  if ((mm = /^ADD\s+(PRIMARY\s+KEY|UNIQUE|FOREIGN\s+KEY|CHECK|CONSTRAINT)\b([\s\S]*)$/i.exec(rest))) {
+    var tmp = this.createTableMeta(k, mm[1] + mm[2]); return { msg: '제약조건을 추가했어요.', ddl: true, table: k };
+  }
+  if ((mm = /^DROP\s+(?:COLUMN\s+)?("[^"]+"|\S+)\s*$/i.exec(rest))) {
+    var ci = this.colIndex(k, mm[1]), cn = t.cols[ci];
+    if (t.cols.length === 1) fail('열이 하나뿐인 테이블에서는 열을 지울 수 없어요.');
+    if (meta.pk.some(function (p) { return lc(p) === lc(cn); })) fail(cn + ' 열은 기본키라서 지울 수 없어요.');
+    var refd = Object.keys(this.meta).filter(function (tn) { return self.meta[tn].fk.some(function (f) { return f.ref === k && f.rcols.some(function (rc) { return lc(rc) === lc(cn); }); }); });
+    if (refd.length) fail(cn + ' 열은 ' + refd.join(', ') + ' 테이블이 참조하고 있어서 지울 수 없어요.');
+    t.cols.splice(ci, 1); t.rows.forEach(function (r) { r.splice(ci, 1); }); meta.cols.splice(ci, 1);
+    meta.uq = meta.uq.filter(function (u) { return !u.some(function (x) { return lc(x) === lc(cn); }); });
+    meta.fk = meta.fk.filter(function (f) { return !f.cols.some(function (x) { return lc(x) === lc(cn); }); });
+    return { msg: k + ' 테이블에서 ' + cn + ' 열을 지웠어요. (그 열의 데이터도 함께 사라져요)', ddl: true, table: k };
+  }
+  if ((mm = /^(?:MODIFY|ALTER)\s+(?:COLUMN\s+)?("[^"]+"|\S+)\s+(?:SET\s+DATA\s+TYPE\s+|TYPE\s+)?([\s\S]+)$/i.exec(rest))) {
+    var mi = this.colIndex(k, mm[1]), nc = parseColDef(t.cols[mi] + ' ' + mm[2]);
+    meta.cols[mi].type = nc.type || meta.cols[mi].type; if (nc.nn) meta.cols[mi].nn = true; if (nc.def !== undefined) meta.cols[mi].def = nc.def;
+    return { msg: t.cols[mi] + ' 열의 정의를 바꿨어요. (자료형: ' + meta.cols[mi].type + ')', ddl: true, table: k };
+  }
+  if ((mm = /^RENAME\s+COLUMN\s+("[^"]+"|\S+)\s+TO\s+("[^"]+"|\S+)\s*$/i.exec(rest))) {
+    var ri = this.colIndex(k, mm[1]), old = t.cols[ri], nn = unq(mm[2]);
+    t.cols[ri] = nn; meta.cols[ri].name = nn;
+    meta.pk = meta.pk.map(function (x) { return lc(x) === lc(old) ? nn : x; });
+    return { msg: old + ' 열 이름을 ' + nn + '(으)로 바꿨어요.', ddl: true, table: k };
+  }
+  if ((mm = /^RENAME\s+TO\s+("[^"]+"|\S+)\s*$/i.exec(rest))) {
+    var nt = unq(mm[1]); if (this.tableKey(nt)) fail('table ' + nt + ' already exists');
+    this.db.tables[nt] = t; delete this.db.tables[k]; this.meta[nt] = meta; delete this.meta[k];
+    Object.keys(this.meta).forEach(function (tn) { self.meta[tn].fk.forEach(function (f) { if (f.ref === k) f.ref = nt; }); });
+    return { msg: '테이블 이름을 ' + k + ' → ' + nt + '(으)로 바꿨어요.', ddl: true, table: nt };
+  }
+  fail('ALTER TABLE에서 이해하지 못한 부분: ' + rest.split(/\s/).slice(0, 3).join(' ') + ' — ADD / DROP COLUMN / MODIFY / RENAME 을 쓸 수 있어요.');
+};
+S.createTableMeta = function (k, d) {
+  var meta = this.meta[k], mm; d = d.trim().replace(/^CONSTRAINT\s+\S+\s+/i, '');
+  if ((mm = /^PRIMARY\s+KEY\s*\(([^)]*)\)/i.exec(d))) { if (meta.pk.length) fail('기본키가 이미 있어요.'); meta.pk = mm[1].split(',').map(function (x) { return unq(x.trim()); }); }
+  else if ((mm = /^UNIQUE\s*\(([^)]*)\)/i.exec(d))) meta.uq.push(mm[1].split(',').map(function (x) { return unq(x.trim()); }));
+  else if ((mm = /^CHECK\s*\(([\s\S]*)\)\s*$/i.exec(d))) meta.chk.push(mm[1].trim());
+  else if ((mm = /^FOREIGN\s+KEY\s*\(([^)]*)\)\s*REFERENCES\s+("[^"]+"|[^\s(]+)\s*(?:\(([^)]*)\))?/i.exec(d))) { var rk = this.needTable(mm[2]); meta.fk.push({ cols: mm[1].split(',').map(function (x) { return unq(x.trim()); }), ref: rk, rcols: mm[3] ? mm[3].split(',').map(function (x) { return unq(x.trim()); }) : this.meta[rk].pk.slice() }); }
+  else fail('제약조건을 이해하지 못했어요.');
+  this.validateTable(k, true);
+};
+
+/* ---------- 제약조건 검사 ---------- */
+S.validateTable = function (k, silentChildren) {
+  var t = this.db.tables[k], meta = this.meta[k], self = this; if (!meta) return;
+  var idx = function (c) { return self.colIndex(k, c); };
+  meta.cols.forEach(function (c, i) { if (c.nn) t.rows.forEach(function (r) { if (r[i] === null || r[i] === undefined) fail('NOT NULL constraint failed: ' + k + '.' + c.name + ' — "' + c.name + '"은(는) 비워 둘 수 없는 열이에요.'); }); });
+  var uqs = (meta.pk.length ? [meta.pk] : []).concat(meta.uq);
+  uqs.forEach(function (u) {
+    var ix = u.map(idx), seen = {};
+    t.rows.forEach(function (r) {
+      var vals = ix.map(function (i) { return r[i]; });
+      if (vals.some(function (v) { return v === null; })) return;
+      var key = JSON.stringify(vals);
+      if (seen[key]) fail('UNIQUE constraint failed: ' + k + '.' + u.join(', ') + ' — 이미 같은 값(' + vals.join(', ') + ')이 있어요. ' + (meta.pk.length && u === meta.pk ? '기본키는 중복될 수 없어요.' : '이 열은 중복을 허용하지 않아요.'));
+      seen[key] = 1;
+    });
+  });
+  meta.chk.forEach(function (c) {
+    var res; try { res = M.run(self.db, 'SELECT COUNT(*) FROM "' + k + '" WHERE NOT (' + c + ')'); } catch (e) { fail('CHECK 조건을 해석할 수 없어요: ' + c); }
+    if (res.rows[0][0] > 0) fail('CHECK constraint failed: ' + c + ' — 이 조건을 만족하지 않는 값은 저장할 수 없어요.');
+  });
+  meta.fk.forEach(function (f) {
+    var pt = self.db.tables[f.ref], pix = f.rcols.map(function (c) { return self.colIndex(f.ref, c); }), cix = f.cols.map(idx);
+    var pset = {}; pt.rows.forEach(function (r) { pset[JSON.stringify(pix.map(function (i) { return r[i]; }))] = 1; });
+    t.rows.forEach(function (r) {
+      var v = cix.map(function (i) { return r[i]; }); if (v.some(function (x) { return x === null; })) return;
+      if (!pset[JSON.stringify(v)]) fail('FOREIGN KEY constraint failed: ' + k + '.' + f.cols.join(', ') + '의 값 ' + v.join(', ') + '이(가) ' + f.ref + ' 테이블에 없어요. 참조하는 값이 먼저 있어야 해요.');
+    });
+  });
+  if (!silentChildren) Object.keys(this.meta).forEach(function (ck) {
+    if (ck !== k && self.meta[ck].fk.some(function (f) { return f.ref === k; })) {
+      try { self.validateTable(ck, true); } catch (e) { fail('FOREIGN KEY constraint failed: ' + ck + ' 테이블이 이 행을 참조하고 있어서 지우거나 바꿀 수 없어요. (' + ck + ' 쪽을 먼저 정리하세요)'); }
+    }
+  });
+};
+
+/* ---------- 뷰·인덱스·권한·트랜잭션 ---------- */
+S.createView = function (sql) {
+  var m = /^CREATE\s+(OR\s+REPLACE\s+)?VIEW\s+("[^"]+"|\S+)\s+AS\s+([\s\S]+)$/i.exec(sql); if (!m) fail('CREATE VIEW 뷰이름 AS SELECT ...');
+  var name = unq(m[2]); if (this.tableKey(name)) fail(name + '은(는) 이미 테이블 이름으로 쓰고 있어요.');
+  if (this.viewText[name] && !m[1]) fail('view ' + name + ' already exists');
+  var ast = new M.Parser(m[3]).compound(); M.run(this.db, m[3]);
+  this.viewText[name] = m[3]; this.db.views[name] = ast;
+  return { msg: name + ' 뷰를 만들었어요. (데이터를 복사한 것이 아니라 SELECT를 저장한 "가상 테이블"이에요)', ddl: true };
+};
+S.dropView = function (sql) {
+  var m = /^DROP\s+VIEW\s+(IF\s+EXISTS\s+)?("[^"]+"|\S+)\s*$/i.exec(sql); var n = unq(m[2]);
+  if (!this.viewText[n]) { if (m[1]) return { msg: '없는 뷰라서 건너뛰었어요.' }; fail('no such view: ' + n); }
+  delete this.viewText[n]; delete this.db.views[n]; return { msg: n + ' 뷰를 지웠어요. (원본 테이블의 데이터는 그대로예요)', ddl: true };
+};
+S.createIndex = function (sql) {
+  var m = /^CREATE\s+(UNIQUE\s+)?INDEX\s+("[^"]+"|\S+)\s+ON\s+("[^"]+"|[^\s(]+)\s*\(([^)]*)\)\s*$/i.exec(sql); if (!m) fail('CREATE INDEX 인덱스이름 ON 테이블(열)');
+  var k = this.needTable(m[3]), cols = m[4].split(',').map(function (x) { return unq(x.trim()); }); cols.forEach(function (c) { this.colIndex(k, c); }, this);
+  if (m[1]) { this.meta[k].uq.push(cols); try { this.validateTable(k, true); } catch (e) { this.meta[k].uq.pop(); throw e; } }
+  this.indexes[unq(m[2])] = { table: k, cols: cols, unique: !!m[1] };
+  return { msg: unq(m[2]) + ' 인덱스를 만들었어요. (' + k + '.' + cols.join(', ') + ' 검색이 빨라져요 — 결과는 같고 속도만 달라져요)', ddl: true };
+};
+S.dropIndex = function (sql) {
+  var m = /^DROP\s+INDEX\s+(IF\s+EXISTS\s+)?("[^"]+"|\S+)/i.exec(sql); var n = unq(m[2]);
+  if (!this.indexes[n]) { if (m[1]) return { msg: '없는 인덱스라 건너뛰었어요.' }; fail('no such index: ' + n); }
+  var ix = this.indexes[n]; if (ix.unique) { var meta = this.meta[ix.table]; meta.uq = meta.uq.filter(function (u) { return u.join() !== ix.cols.join(); }); }
+  delete this.indexes[n]; return { msg: n + ' 인덱스를 지웠어요.', ddl: true };
+};
+var PRIVS = ['SELECT', 'INSERT', 'UPDATE', 'DELETE'];
+S.grant = function (sql, isGrant) {
+  if (this.user !== '관리자') fail('권한을 주고 빼앗는 것은 관리자만 할 수 있어요. (지금 사용자: ' + this.user + ')');
+  var m = isGrant ? /^GRANT\s+([\s\S]+?)\s+ON\s+("[^"]+"|\S+)\s+TO\s+(\S+)(\s+WITH\s+GRANT\s+OPTION)?\s*$/i.exec(sql) : /^REVOKE\s+([\s\S]+?)\s+ON\s+("[^"]+"|\S+)\s+FROM\s+(\S+)\s*$/i.exec(sql);
+  if (!m) fail(isGrant ? 'GRANT 권한 ON 테이블 TO 사용자 — TO를 쓰는 것을 확인하세요.' : 'REVOKE 권한 ON 테이블 FROM 사용자 — FROM을 쓰는 것을 확인하세요.');
+  var k = this.needTable(m[2]), user = m[3].replace(/;$/, ''), self = this;
+  var ps = m[1].split(',').map(function (x) { return x.trim().toUpperCase(); });
+  if (ps.length === 1 && /^ALL(\s+PRIVILEGES)?$/.test(ps[0])) ps = PRIVS.slice();
+  ps.forEach(function (p) { if (PRIVS.indexOf(p) < 0) fail('이 실습에서는 ' + PRIVS.join(', ') + ' 권한만 다뤄요. (' + p + ')'); });
+  ps.forEach(function (p) {
+    self.priv = self.priv.filter(function (x) { return !(x.user === user && x.table === k && x.priv === p); });
+    if (isGrant) self.priv.push({ user: user, table: k, priv: p, opt: !!m[4] });
+  });
+  return { msg: isGrant ? user + '에게 ' + k + ' 테이블의 ' + ps.join(', ') + ' 권한을 주었어요.' : user + '의 ' + k + ' 테이블 ' + ps.join(', ') + ' 권한을 회수했어요.', ddl: false, priv: true };
+};
+S.can = function (priv, table) { var self = this; if (this.user === '관리자') return true; return this.priv.some(function (x) { return x.user === self.user && lc(x.table) === lc(table) && x.priv === priv; }); };
+S.checkPriv = function (sql, kind) {
+  if (this.user === '관리자') return;
+  var self = this, names = [], re, m;
+  var all = Object.keys(this.db.tables).concat(Object.keys(this.viewText));
+  if (kind === 'select') { re = /\b(?:FROM|JOIN)\s+("[^"]+"|[^\s(),;]+)/gi; while ((m = re.exec(sql))) names.push(unq(m[1])); names.forEach(function (n) { var k = self.tableKey(n); if (k && !self.can('SELECT', k)) fail('권한이 부족해요: ' + self.user + '에게는 ' + k + ' 테이블의 SELECT 권한이 없어요. (관리자가 GRANT SELECT ON ' + k + ' TO ' + self.user + ' 를 해야 해요)'); }); }
+  else {
+    var p = kind.toUpperCase(), tm = kind === 'insert' ? /^INSERT\s+INTO\s+("[^"]+"|[^\s(]+)/i.exec(sql) : kind === 'update' ? /^UPDATE\s+("[^"]+"|\S+)/i.exec(sql) : /^DELETE\s+FROM\s+("[^"]+"|\S+)/i.exec(sql);
+    if (tm) { var tk = this.tableKey(unq(tm[1])); if (tk && !this.can(p, tk)) fail('권한이 부족해요: ' + this.user + '에게는 ' + tk + ' 테이블의 ' + p + ' 권한이 없어요. (관리자가 GRANT ' + p + ' ON ' + tk + ' TO ' + this.user + ' 를 해야 해요)'); }
+    if (/\bFROM\b/i.test(sql) && kind !== 'delete') { re = /\b(?:FROM|JOIN)\s+("[^"]+"|[^\s(),;]+)/gi; while ((m = re.exec(sql))) { var k2 = this.tableKey(unq(m[1])); if (k2 && !this.can('SELECT', k2)) fail('권한이 부족해요: ' + this.user + '에게는 ' + k2 + ' 테이블의 SELECT 권한이 없어요.'); } }
+  }
+};
+
+/* ---------- 실행 ---------- */
+S.tableRows = function (name) { var k = this.tableKey(name); return k ? this.db.tables[k].rows.map(function (r) { return r.slice(); }) : []; };
+function eqRow(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
+S.diff = function (before, after, kind) {
+  var res = { added: [], changed: [], removed: [] };
+  if (kind === 'insert') { for (var i = before.length; i < after.length; i++) res.added.push(i); }
+  else if (kind === 'update') { for (var j = 0; j < after.length; j++) if (before[j] && !eqRow(before[j], after[j])) res.changed.push(j); }
+  else if (kind === 'delete') { var p = 0; before.forEach(function (r, i) { if (p < after.length && eqRow(r, after[p])) p++; else res.removed.push(i); }); }
+  return res;
+};
+S.runOne = function (sql) {
+  var s = sql.replace(/^\s+/, ''), up = s.toUpperCase(), self = this, r, mm;
+  var first = (/^[A-Za-z]+/.exec(up) || [''])[0];
+  var mkDDL = function (f) { r = f.call(self, s); self.commitBase(); self.log.push({ t: 'ddl', sql: s.split('\n')[0].slice(0, 60) }); return { kind: 'msg', msg: r.msg, table: r.table, ddl: true }; };
+  switch (first) {
+    case 'CREATE':
+      if (/^CREATE\s+TABLE/i.test(s)) { if (this.user !== '관리자') fail('테이블을 만드는 권한이 없어요.'); return mkDDL(this.createTable); }
+      if (/^CREATE\s+(OR\s+REPLACE\s+)?VIEW/i.test(s)) return mkDDL(this.createView);
+      if (/^CREATE\s+(UNIQUE\s+)?INDEX/i.test(s)) return mkDDL(this.createIndex);
+      fail('CREATE 다음에는 TABLE / VIEW / INDEX 를 쓸 수 있어요.');
+    case 'DROP':
+      if (/^DROP\s+TABLE/i.test(s)) return mkDDL(this.dropTable);
+      if (/^DROP\s+VIEW/i.test(s)) return mkDDL(this.dropView);
+      if (/^DROP\s+INDEX/i.test(s)) return mkDDL(this.dropIndex);
+      fail('DROP 다음에는 TABLE / VIEW / INDEX 를 쓸 수 있어요.');
+    case 'ALTER': return mkDDL(this.alterTable);
+    case 'TRUNCATE': return mkDDL(this.truncate);
+    case 'GRANT': r = this.grant(s, true); this.log.push({ t: 'dcl', sql: s.slice(0, 60) }); return { kind: 'msg', msg: r.msg, priv: true };
+    case 'REVOKE': r = this.grant(s, false); this.log.push({ t: 'dcl', sql: s.slice(0, 60) }); return { kind: 'msg', msg: r.msg, priv: true };
+    case 'BEGIN': case 'START': this.commitBase(); this.inTx = true; this.log.push({ t: 'begin' }); return { kind: 'msg', msg: '트랜잭션을 시작했어요. 지금부터의 변경은 COMMIT 하기 전까지 "임시" 상태예요.', tx: true };
+    case 'COMMIT': { var n = this.pending, wasTx = this.inTx; this.commitBase(); this.log.forEach(function (l) { if (l.t === 'dml' && !l.done) l.done = 'commit'; }); this.log.push({ t: 'commit' }); return { kind: 'msg', msg: wasTx ? 'COMMIT: 임시 변경 ' + n + '건을 확정했어요. 이제 ROLLBACK으로 되돌릴 수 없어요.' : 'COMMIT: 확정할 임시 변경이 없어요. (BEGIN 없이 실행한 INSERT/UPDATE/DELETE는 곧바로 확정되는 "자동 커밋" 상태예요)', tx: true }; }
+    case 'SAVEPOINT': { mm = /^SAVEPOINT\s+(\S+)/i.exec(s); if (!mm) fail('SAVEPOINT 이름'); var nm = mm[1].replace(/;$/, ''); this.sp = this.sp.filter(function (x) { return x.name.toLowerCase() !== nm.toLowerCase(); }); if (!this.inTx) { this.commitBase(); this.inTx = true; } this.sp.push({ name: nm, snap: this.snap(), pending: this.pending, logLen: this.log.length }); this.log.push({ t: 'sp', sql: nm }); return { kind: 'msg', msg: '저장점 ' + nm + ' 을(를) 만들었어요. (ROLLBACK TO ' + nm + ' 으로 여기까지 되돌릴 수 있어요)', tx: true }; }
+    case 'RELEASE': return { kind: 'msg', msg: '저장점을 해제했어요.', tx: true };
+    case 'ROLLBACK': {
+      mm = /^ROLLBACK\s+(?:TO\s+(?:SAVEPOINT\s+)?)(\S+)/i.exec(s);
+      if (mm) {
+        var nm2 = mm[1].replace(/;$/, ''), ix = -1; this.sp.forEach(function (x, i) { if (x.name.toLowerCase() === nm2.toLowerCase()) ix = i; });
+        if (ix < 0) fail('no such savepoint: ' + nm2);
+        var sp = this.sp[ix]; this.restore(sp.snap); this.pending = sp.pending; this.sp = this.sp.slice(0, ix + 1);
+        for (var li = sp.logLen; li < this.log.length; li++) if (this.log[li].t === 'dml' && !this.log[li].done) this.log[li].done = 'rollback';
+        this.log.push({ t: 'rollbackto', sql: nm2 }); return { kind: 'msg', msg: 'ROLLBACK TO ' + nm2 + ': 저장점 이후의 변경만 취소했어요. 저장점 이전의 임시 변경은 남아 있어요.', tx: true };
+      }
+      var cnt = this.pending, wasTx2 = this.inTx; this.restore(this.base); this.pending = 0; this.sp = []; this.inTx = false;
+      this.log.forEach(function (l) { if (l.t === 'dml' && !l.done) l.done = 'rollback'; }); this.log.push({ t: 'rollback' });
+      return { kind: 'msg', msg: wasTx2 ? 'ROLLBACK: 마지막 COMMIT 이후의 임시 변경 ' + cnt + '건을 모두 취소했어요.' : 'ROLLBACK: 되돌릴 임시 변경이 없어요. BEGIN 없이 실행한 변경은 이미 자동 확정됐어요. 되돌리려면 BEGIN 으로 트랜잭션을 먼저 시작하세요.', tx: true };
+    }
+    case 'SELECT': case 'WITH': {
+      this.checkPriv(s, 'select');
+      r = M.run(this.db, s); return { kind: 'select', cols: r.cols, rows: r.rows };
+    }
+    case 'INSERT': case 'UPDATE': case 'DELETE': {
+      var kind = first.toLowerCase(); this.checkPriv(s, kind);
+      var tm = kind === 'insert' ? /^INSERT\s+INTO\s+("[^"]+"|[^\s(]+)/i.exec(s) : kind === 'update' ? /^UPDATE\s+("[^"]+"|\S+)/i.exec(s) : /^DELETE\s+FROM\s+("[^"]+"|\S+)/i.exec(s);
+      if (!tm) fail('near "' + s.split(/\s/)[1] + '": syntax error');
+      var tk = this.needTable(tm[1]), snap = this.snap(), before = this.tableRows(tk), n0 = this.db.tables[tk].rows.length;
+      try {
+        r = M.run(this.db, s);
+        if (kind === 'insert') {
+          var cm = /^INSERT\s+INTO\s+(?:"[^"]+"|[^\s(]+)\s*\(([^)]*)\)/i.exec(s), given = cm ? cm[1].split(',').map(function (x) { return lc(unq(x.trim())); }) : null;
+          var meta = this.meta[tk], tb = this.db.tables[tk];
+          meta.cols.forEach(function (c, ci) { if (c.def !== undefined && (given && given.indexOf(lc(c.name)) < 0)) for (var ri = n0; ri < tb.rows.length; ri++) tb.rows[ri][ci] = defVal(self, c.def); });
+        }
+        this.validateTable(tk);
+      } catch (e) { this.restore(snap); throw e; }
+      var after = this.tableRows(tk), n = r.changes || 0;
+      if (this.inTx) this.pending += n; else this.commitBase(); this.log.push({ t: 'dml', sql: s.split('\n')[0].slice(0, 70), n: n });
+      var verb = { insert: '추가', update: '수정', delete: '삭제' }[kind];
+      return { kind: 'dml', table: tk, dkind: kind, before: before, after: after, cols: this.db.tables[tk].cols.slice(), diff: this.diff(before, after, kind), msg: n + '행이 ' + verb + '되었어요.' + (this.inTx ? ' (아직 COMMIT 전 — 임시 변경이에요)' : ''), n: n };
+    }
+  }
+  fail('near "' + s.split(/\s/)[0] + '": syntax error — 이 실습에서 쓸 수 있는 명령이 아니에요.');
+};
+S.exec = function (sql) {
+  var stmts = splitStatements(sql), out = [];
+  if (!stmts.length) return [{ kind: 'error', msg: '실행할 SQL이 없어요. 위 입력칸에 SQL을 써 주세요.' }];
+  for (var i = 0; i < stmts.length; i++) {
+    try { var r = this.runOne(stmts[i]); r.sql = stmts[i]; out.push(r); }
+    catch (e) {
+      var msg = (e && e.message) || String(e);
+      if (!(e instanceof LabError) && !(e instanceof M.SqlError) && !(e && e.constructor && e.constructor.name === 'SqlError')) msg = '내부 오류: ' + msg;
+      out.push({ kind: 'error', sql: stmts[i], msg: msg, skipped: stmts.length - i - 1 }); break;
+    }
+  }
+  return out;
+};
+S.info = function () {
+  var self = this, out = [];
+  Object.keys(this.db.tables).forEach(function (k) {
+    var t = self.db.tables[k], m = self.meta[k] || { cols: [], pk: [], fk: [], uq: [], chk: [] };
+    out.push({ name: k, cols: t.cols.map(function (c, i) {
+      var mc = m.cols[i] || {}, fk = m.fk.filter(function (f) { return f.cols.some(function (x) { return lc(x) === lc(c); }); })[0];
+      return { name: c, type: mc.type || '', pk: m.pk.some(function (x) { return lc(x) === lc(c); }), nn: !!mc.nn, uq: m.uq.some(function (u) { return u.length === 1 && lc(u[0]) === lc(c); }), fk: fk ? fk.ref + '.' + fk.rcols.join(',') : null, def: mc.def };
+    }), rows: t.rows, chk: m.chk, view: false });
+  });
+  Object.keys(this.viewText).forEach(function (v) { var r; try { r = M.run(self.db, 'SELECT * FROM "' + v + '"'); } catch (e) { r = { cols: [], rows: [] }; } out.push({ name: v, cols: r.cols.map(function (c) { return { name: c, type: '', pk: false, nn: false }; }), rows: r.rows, chk: [], view: true, text: self.viewText[v] }); });
+  return out;
+};
+function makeSession(script) { var s = new Session(); if (script) { var r = s.exec(script); r.forEach(function (x) { if (x.kind === 'error') throw new Error('setup: ' + x.msg + ' @ ' + x.sql); }); s.commitBase(); s.log = []; } return s; }
+root.SQLLab = { Session: Session, makeSession: makeSession, splitStatements: splitStatements, LabError: LabError };
+
+})(typeof window !== 'undefined' ? window : globalThis);
+
+;
+var DATA = {
+  school: "CREATE TABLE 학생 (학번 INT PRIMARY KEY, 이름 VARCHAR(10) NOT NULL, 학과 VARCHAR(10), 점수 INT);\n" +
+    "INSERT INTO 학생 VALUES (101,'민수','IT',82),(102,'지민','게임',91),(103,'서준','IT',76),(104,'수빈','IT',95),(105,'예은','게임',88),(106,'도윤','디자인',70);\n" +
+    "CREATE TABLE 수강 (학번 INT, 과목 VARCHAR(10));\n" +
+    "INSERT INTO 수강 VALUES (101,'자바'),(101,'SQL'),(102,'자바'),(104,'SQL'),(105,'C언어');",
+  school_null: "CREATE TABLE 학생 (학번 INT PRIMARY KEY, 이름 VARCHAR(10) NOT NULL, 학과 VARCHAR(10), 점수 INT);\n" +
+    "INSERT INTO 학생 VALUES (101,'민수','IT',82),(102,'지민','게임',91),(103,'서준','IT',76),(104,'수빈','IT',95),(105,'예은','게임',88),(106,'도윤','디자인',70),(107,'하늘','보안',NULL);",
+  school_join: "CREATE TABLE 학생 (학번 INT PRIMARY KEY, 이름 VARCHAR(10) NOT NULL, 학과 VARCHAR(10), 점수 INT);\n" +
+    "INSERT INTO 학생 VALUES (101,'민수','IT',82),(102,'지민','게임',91),(103,'서준','IT',76),(104,'수빈','IT',95),(105,'예은','게임',88),(106,'도윤','디자인',70);\n" +
+    "CREATE TABLE 수강 (학번 INT, 과목 VARCHAR(10));\n" +
+    "INSERT INTO 수강 VALUES (101,'자바'),(101,'SQL'),(102,'자바'),(104,'SQL'),(105,'C언어'),(107,'파이썬');",
+  emp: "CREATE TABLE 부서 (부서 VARCHAR(10) PRIMARY KEY, 위치 VARCHAR(10));\n" +
+    "INSERT INTO 부서 VALUES ('개발','서울'),('영업','부산'),('인사','대구'),('기획','광주');\n" +
+    "CREATE TABLE 직원 (사번 INT PRIMARY KEY, 이름 VARCHAR(10) NOT NULL, 부서 VARCHAR(10) REFERENCES 부서(부서), 급여 INT);\n" +
+    "INSERT INTO 직원 VALUES (1,'한솔','개발',400),(2,'오늘','영업',300),(3,'박하','개발',500),(4,'윤서','인사',350),(5,'정우','영업',450),(6,'신아','개발',420);",
+  shop: "CREATE TABLE 상품 (코드 INT PRIMARY KEY, 상품명 VARCHAR(10) NOT NULL, 가격 INT, 분류 VARCHAR(10));\n" +
+    "INSERT INTO 상품 VALUES (1,'연필',500,'문구'),(2,'노트',1500,'문구'),(3,'우유',1200,'식품'),(4,'빵',2000,'식품'),(5,'가방',25000,'잡화'),(6,'지우개',300,'문구');\n" +
+    "CREATE TABLE 주문 (주문번호 INT PRIMARY KEY, 코드 INT REFERENCES 상품(코드), 수량 INT);\n" +
+    "INSERT INTO 주문 VALUES (101,1,10),(102,3,2),(103,1,5),(104,5,1),(105,2,3),(106,3,4);",
+  all: null, empty: ""
+};
+DATA.all = DATA.school + "\n" + DATA.emp + "\n" + DATA.shop;
+
+
+;
+var LESSONS = [];
+var P = function (h) { return { t: 'p', html: h }; };
+var TIP = function (h) { return { t: 'tip', html: h }; };
+var WARN = function (h) { return { t: 'warn', html: h }; };
+var H = function (h) { return { t: 'h', html: h }; };
+var TRY = function (sql, note, o) { return Object.assign({ t: 'try', sql: sql, note: note || '' }, o || {}); };
+var QUIZ = function (sql, wrong, why, o) { return Object.assign({ t: 'quiz', sql: sql, wrong: wrong, why: why }, o || {}); };
+var MISSION = function (id, q, ref, hints, o) { return Object.assign({ t: 'mission', id: id, q: q, ref: ref, hints: hints }, o || {}); };
+var SYN = function (h) { return { t: 'syn', html: h }; };
+
+LESSONS.push({ id: 'L1', title: 'SQL 첫걸음 — 표 구경하기', min: 6, data: 'school',
+  goal: '데이터베이스·테이블·행·열이 무엇인지 알고, SELECT * 로 표 전체를 볼 수 있다.',
+  blocks: [
+    P('<b>데이터베이스(DB)</b>는 데이터를 정리해서 모아 둔 창고이고, <b>SQL</b>은 그 창고에 "이거 보여줘", "이거 넣어줘"라고 말하는 <b>전용 언어</b>예요. 관계형 DB에서는 데이터를 엑셀 같은 <b>표(테이블)</b>로 저장해요.'),
+    P('오른쪽(모바일은 아래 <b>📋 내 DB</b> 버튼)에서 <b>학생</b> 표와 <b>수강</b> 표를 볼 수 있어요. 용어부터 정리해요.'),
+    { t: 'terms', items: [['테이블(Table)', '데이터를 담는 표 하나. 이름이 있어요. 예: 학생'], ['열(Column) = 속성(Attribute)', '표의 세로 줄. 어떤 종류의 정보인지 나타내요. 예: 이름, 점수'], ['행(Row) = 튜플(Tuple) = 레코드', '표의 가로 줄. 학생 한 명의 정보가 한 행이에요.'], ['기본키(PK)', '행 하나를 딱 구분해 주는 열. 학생 표에서는 학번 (🔑 표시)']] },
+    H('1. 표 전체 보기: SELECT * FROM'),
+    SYN('<b>SELECT</b> 보고 싶은 것 <b>FROM</b> 어느 표에서;'),
+    P('<code>*</code>(별표)는 "모든 열"이라는 뜻이에요. 아래 ▶ 실행 버튼을 눌러 보세요. (SQL 끝의 <code>;</code> 세미콜론은 "문장 끝"이라는 표시예요.)'),
+    TRY('SELECT * FROM 학생;', '학생 표의 모든 행, 모든 열이 나와요. 표의 행 수와 비교해 보세요.'),
+    TRY('SELECT * FROM 수강;', '이번에는 수강 표예요. 같은 학번이 여러 번 나오는 것도 확인!'),
+    TIP('SQL 키워드(SELECT, FROM)는 <b>대문자/소문자를 구분하지 않아요</b>. 다만 읽기 쉽게 키워드는 대문자로 쓰는 습관을 들이면 좋아요. 줄바꿈과 공백은 자유예요.'),
+    H('2. SQL 명령의 4가지 종류 (시험 단골!)'),
+    { t: 'terms', items: [['DDL (정의어)', 'CREATE, ALTER, DROP, TRUNCATE — 표의 구조를 만들고 바꾸고 지워요. (7단원)'], ['DML (조작어)', 'SELECT, INSERT, UPDATE, DELETE — 데이터를 조회·추가·수정·삭제해요. (2~6단원)'], ['DCL (제어어)', 'GRANT, REVOKE — 사용 권한을 주고 빼앗아요. (13단원)'], ['TCL (트랜잭션 제어어)', 'COMMIT, ROLLBACK, SAVEPOINT — 변경을 확정하거나 되돌려요. (12단원)']] },
+    P('지금은 <b>SELECT(조회)</b>부터 시작해요. 조회는 데이터를 <b>바꾸지 않고 읽기만</b> 해서 가장 안전해요. 마음껏 눌러 보세요!'),
+    QUIZ('SELECT * FROM 수강;', ['5행 · 3열', '6행 · 2열', '2행 · 5열'], '수강 표는 학번·과목 2개 열이고, 행은 (101 자바), (101 SQL), (102 자바), (104 SQL), (105 C언어) 5개예요.', { kind: 'shape', pre: '아래 SQL을 실행하면 나오는 표의 크기는? (실행하기 전에 DB 패널의 수강 표를 보고 예측!)' }),
+    MISSION('m1-1', '<b>학생</b> 표의 모든 행과 모든 열을 조회해 보세요.', 'SELECT * FROM 학생', ['"모든 열"을 뜻하는 기호는 * 예요.', 'SELECT * FROM 표이름 형태로 써요. 표 이름은 학생!']),
+    MISSION('m1-2', '<b>수강</b> 표의 모든 내용을 조회해 보세요.', 'SELECT * FROM 수강', ['표 이름만 바꾸면 돼요.'])
+  ] });
+
+LESSONS.push({ id: 'L2', title: '원하는 열만 골라 보기', min: 8, data: 'school',
+  goal: 'SELECT 뒤에 열 이름을 써서 필요한 열만 조회하고, 별칭(AS)·DISTINCT·계산식을 쓸 수 있다.',
+  blocks: [
+    P('<code>*</code>는 편하지만 열이 수십 개인 실제 DB에서는 필요한 열만 고르는 게 훨씬 좋아요. SELECT 뒤에 <b>열 이름을 쉼표(,)로 구분</b>해서 쓰면 돼요.'),
+    SYN('SELECT <b>열1, 열2</b> FROM 표;'),
+    TRY('SELECT 이름 FROM 학생;', '이름 열 하나만 나와요.'),
+    TRY('SELECT 이름, 점수 FROM 학생;', '쓴 순서대로 열이 나와요. 순서를 바꿔 SELECT 점수, 이름 으로도 해 보세요.'),
+    H('1. 별칭: AS'),
+    P('결과의 열 제목을 바꾸고 싶으면 <code>AS</code>를 써요. 원본 표는 바뀌지 않고, <b>결과 화면의 제목만</b> 바뀌어요.'),
+    TRY('SELECT 이름 AS 학생이름, 점수 AS 시험점수 FROM 학생;'),
+    H('2. 중복 제거: DISTINCT'),
+    P('학과 열을 조회하면 같은 값이 여러 번 나와요. <code>DISTINCT</code>를 붙이면 <b>겹치는 행을 하나로</b> 합쳐요.'),
+    TRY('SELECT 학과 FROM 학생;', '먼저 중복이 있는 상태를 봐요. (IT가 3번)'),
+    TRY('SELECT DISTINCT 학과 FROM 학생;', 'DISTINCT를 붙이면 IT, 게임, 디자인 3행만!'),
+    H('3. 계산해서 보여주기'),
+    P('열 값으로 <code>+ - * / %</code> 계산을 할 수 있어요. 결과는 <b>그 순간 계산해서 보여줄 뿐</b>, 표 안의 값은 바뀌지 않아요.'),
+    TRY('SELECT 이름, 점수 - 10 AS 감점후 FROM 학생;'),
+    TRY('SELECT 7 / 2, 7 % 2, 7.0 / 2;', 'FROM 없이 계산기처럼도 쓸 수 있어요. 정수끼리 나누면 몫만 나오는 점(7/2=3)에 주의! (% 는 나머지)', { nodiff: false }),
+    WARN('<b>표 안의 데이터는 그대로예요.</b> SELECT는 언제나 "보기"만 해요. 값을 실제로 바꾸는 건 UPDATE(6단원)예요.'),
+    QUIZ('SELECT DISTINCT 학과 FROM 학생;', ['IT, 게임, 디자인, IT, 게임, IT', 'IT, 게임', '디자인'], 'DISTINCT는 같은 값을 하나로 합쳐요. 학과 값의 종류는 IT, 게임, 디자인 3가지예요. (처음 나온 순서대로)'),
+    QUIZ('SELECT 이름, 점수 - 10 AS 감점후 FROM 학생;', ['민수 72 / 지민 81 / 서준 66 / 수빈 85 / 예은 78 / 도윤 60', '민수 82 / 지민 91 / 서준 76 / 수빈 95 / 예은 88 / 도윤 70', '72, 81, 66, 85, 78, 60'], '각 행의 점수에서 10을 뺀 값이 나와요. 이름과 감점후 두 열이 모두 나와야 해요.'),
+    MISSION('m2-1', '학생의 <b>이름</b>과 <b>학과</b>만 조회하세요.', 'SELECT 이름, 학과 FROM 학생', ['필요한 열 두 개를 쉼표로 이어요.', 'SELECT 이름, 학과 FROM 학생']),
+    MISSION('m2-2', '학과의 <b>종류</b>가 무엇이 있는지 (중복 없이) 조회하세요.', 'SELECT DISTINCT 학과 FROM 학생', ['중복을 없애주는 키워드가 있었죠?', 'SELECT 뒤에 DISTINCT를 붙여요.']),
+    MISSION('m2-3', '학생의 이름과, 점수를 <b>10점 올린 값</b>을 <b>보너스점수</b>라는 제목으로 조회하세요. (열 2개)', 'SELECT 이름, 점수 + 10 AS 보너스점수 FROM 학생', ['계산식은 SELECT 뒤에 그대로 써요: 점수 + 10', '제목을 붙이는 키워드는 AS.'], { cols: true })
+  ] });
+
+LESSONS.push({ id: 'L3', title: '조건에 맞는 행만 — WHERE', min: 12, data: 'school_null',
+  goal: 'WHERE로 행을 걸러내고, 비교·AND/OR/NOT·BETWEEN·IN·LIKE·IS NULL을 구분해서 쓸 수 있다.',
+  blocks: [
+    P('지금까지는 열을 골랐어요(세로 필터). 이제 <b>조건에 맞는 행만</b> 고르는 가로 필터 <code>WHERE</code>를 배워요. 이 단원에서는 7번째 학생 <b>하늘(점수가 비어 있음)</b>이 추가돼 있어요. 나중에 NULL을 볼 때 쓸 거예요.'),
+    SYN('SELECT 열 FROM 표 <b>WHERE 조건</b>;'),
+    H('1. 비교 연산자'),
+    { t: 'terms', items: [['=', '같다 (== 가 아니에요!)'], ['<>  또는  !=', '같지 않다'], ['<  >  <=  >=', '작다 / 크다 / 이하 / 이상']] },
+    P('<b>글자(문자열)는 작은따옴표</b>로 감싸요: <code>\'IT\'</code>. 숫자는 그냥 써요.'),
+    TRY("SELECT * FROM 학생 WHERE 학과 = 'IT';"),
+    TRY('SELECT 이름, 점수 FROM 학생 WHERE 점수 >= 90;'),
+    TRY("SELECT * FROM 학생 WHERE 학과 <> 'IT';", '하늘(보안)도 나오죠? 점수는 NULL이어도 학과는 IT가 아니니까요.'),
+    WARN('<code>WHERE 학과 = IT</code> 처럼 따옴표를 빼면 IT를 "열 이름"으로 착각해서 오류가 나요. 직접 해서 오류 메시지를 읽어 보세요!'),
+    TRY('SELECT * FROM 학생 WHERE 학과 = IT;', '일부러 틀린 예. 오류가 나도 괜찮아요. 오류 메시지 읽는 연습!'),
+    H('2. 조건 여러 개: AND / OR / NOT'),
+    { t: 'terms', items: [['AND', '두 조건을 <b>모두</b> 만족 (교집합)'], ['OR', '<b>하나라도</b> 만족 (합집합)'], ['NOT', '조건을 뒤집기']] },
+    TRY("SELECT 이름 FROM 학생 WHERE 학과 = 'IT' AND 점수 >= 80;", 'IT이면서 80점 이상 → 민수(82), 수빈(95)'),
+    TRY("SELECT 이름 FROM 학생 WHERE 학과 = 'IT' OR 점수 >= 80;", '같은 조건을 OR로 바꾸면 훨씬 많이 나와요.'),
+    WARN('<b>AND가 OR보다 먼저 계산돼요</b>(곱셈이 덧셈보다 먼저인 것처럼). 순서를 바꾸고 싶으면 괄호 ( ) 를 써요.'),
+    TRY("SELECT 이름, 학과, 점수 FROM 학생 WHERE 학과 = '게임' OR 학과 = 'IT' AND 점수 >= 90;", 'AND 먼저: (IT이고 90 이상) 또는 (게임). 결과를 보고 어떤 행이 나왔는지 확인하세요.'),
+    TRY("SELECT 이름, 학과, 점수 FROM 학생 WHERE (학과 = '게임' OR 학과 = 'IT') AND 점수 >= 90;", '괄호를 치면 의미가 달라져요. 결과가 어떻게 바뀌었나요?'),
+    H('3. 편리한 조건: BETWEEN · IN · LIKE'),
+    TRY('SELECT * FROM 학생 WHERE 점수 BETWEEN 80 AND 90;', 'BETWEEN a AND b 는 a 이상 b 이하 (양 끝 포함!)'),
+    TRY("SELECT * FROM 학생 WHERE 학과 IN ('IT', '게임');", 'IN (…)은 목록 중 하나와 같으면 OK. OR를 여러 번 쓴 것과 같아요.'),
+    TRY("SELECT 이름 FROM 학생 WHERE 이름 LIKE '%수%';", 'LIKE는 글자 패턴 검색. % 는 "아무 글자 0개 이상", _ 는 "아무 글자 딱 1개"'),
+    TRY("SELECT 이름 FROM 학생 WHERE 이름 LIKE '지_';", '_ 는 정확히 한 글자. "지"로 시작하는 2글자 이름!'),
+    H('4. NULL — 값이 "없음"'),
+    P('NULL은 0도 빈 글자도 아닌 <b>"값이 없다(모른다)"</b>는 뜻이에요. 그래서 <code>= NULL</code>로는 비교할 수 없고, 반드시 <b>IS NULL / IS NOT NULL</b>을 써야 해요.'),
+    TRY('SELECT * FROM 학생 WHERE 점수 = NULL;', '아무것도 안 나와요! NULL과의 = 비교는 항상 "알 수 없음"이라 행이 걸러져요.'),
+    TRY('SELECT * FROM 학생 WHERE 점수 IS NULL;', '이렇게 써야 하늘이 나와요.'),
+    TRY('SELECT * FROM 학생 WHERE 점수 <> 82;', '하늘이 없어요! NULL은 "82가 아님"도 참이 아니에요. NULL은 비교 대상에서 빠져요.'),
+    QUIZ('SELECT 이름 FROM 학생 WHERE 학과 = \'IT\' AND 점수 >= 80;', ['민수, 서준, 수빈', '민수, 지민, 수빈, 예은', '수빈'], 'IT 학생은 민수(82)·서준(76)·수빈(95). 이 중 80 이상은 민수와 수빈이에요.', { data: 'school_null' }),
+    QUIZ('SELECT 이름 FROM 학생 WHERE 점수 BETWEEN 80 AND 90;', ['민수, 예은, 수빈', '민수, 지민, 예은', '예은'], 'BETWEEN은 양 끝을 포함해요. 82(민수), 88(예은)이 해당돼요. 91, 95는 90을 넘어요.', { data: 'school_null' }),
+    QUIZ('SELECT 이름 FROM 학생 WHERE 점수 <> 82;', ['지민, 서준, 수빈, 예은, 도윤, 하늘', '민수, 하늘', '(결과 없음)'], '점수가 NULL인 하늘은 비교 결과가 "알 수 없음"이라 조건을 통과하지 못해요. 그래서 하늘은 빠진 5명이 나와요.', { data: 'school_null' }),
+    QUIZ("SELECT 이름 FROM 학생 WHERE 이름 LIKE '%은';", ['예은', '예은, 도윤', '민수, 서준, 수빈'], "'%은'은 '은'으로 끝나는 이름이에요. 예은만 해당돼요.", { data: 'school_null' }),
+    MISSION('m3-1', '<b>게임</b>학과 학생의 <b>이름</b>과 <b>점수</b>를 조회하세요.', "SELECT 이름, 점수 FROM 학생 WHERE 학과 = '게임'", ['WHERE 학과 = ... 를 써요. 글자는 작은따옴표!']),
+    MISSION('m3-2', '<b>IT 학과이면서 80점 이상</b>인 학생의 이름을 조회하세요.', "SELECT 이름 FROM 학생 WHERE 학과 = 'IT' AND 점수 >= 80", ['두 조건을 모두 만족해야 해요 → AND', "WHERE 학과 = 'IT' AND 점수 >= 80"]),
+    MISSION('m3-3', '점수가 <b>85점 이상 95점 이하</b>인 학생의 이름을 BETWEEN으로 조회하세요.', 'SELECT 이름 FROM 학생 WHERE 점수 BETWEEN 85 AND 95', ['BETWEEN 작은값 AND 큰값']),
+    MISSION('m3-4', '이름에 <b>"수"</b>가 들어간 학생의 이름을 조회하세요.', "SELECT 이름 FROM 학생 WHERE 이름 LIKE '%수%'", ['글자 패턴 검색은 LIKE, 앞뒤에 아무 글자가 와도 되면 %…%']),
+    MISSION('m3-5', '<b>점수가 입력되지 않은</b>(NULL) 학생의 이름을 조회하세요.', 'SELECT 이름 FROM 학생 WHERE 점수 IS NULL', ['NULL 검사는 = 가 아니에요.', 'IS NULL 을 써요.'])
+  ] });
+
+LESSONS.push({ id: 'L4', title: '줄 세우기와 개수 제한', min: 7, data: 'school',
+  goal: 'ORDER BY로 정렬하고 LIMIT/OFFSET으로 상위 N개만 가져올 수 있다.',
+  blocks: [
+    P('SQL은 따로 말하지 않으면 결과의 <b>순서를 보장하지 않아요</b>. 순서가 필요하면 <code>ORDER BY</code>를 꼭 써야 해요. ORDER BY는 SELECT 문의 <b>맨 마지막</b>에 와요.'),
+    SYN('SELECT … FROM … WHERE … <b>ORDER BY 열 [ASC | DESC]</b>;'),
+    { t: 'terms', items: [['ASC', '오름차순 (작은 값 → 큰 값). <b>생략하면 이게 기본값</b>이에요.'], ['DESC', '내림차순 (큰 값 → 작은 값)']] },
+    TRY('SELECT 이름, 점수 FROM 학생 ORDER BY 점수;', '아무것도 안 쓰면 ASC! 낮은 점수부터.'),
+    TRY('SELECT 이름, 점수 FROM 학생 ORDER BY 점수 DESC;', '높은 점수부터.'),
+    TRY('SELECT 이름, 학과, 점수 FROM 학생 ORDER BY 학과, 점수 DESC;', '여러 기준: 학과 순으로 먼저 정렬하고, 같은 학과 안에서는 점수 높은 순.'),
+    TRY('SELECT 이름 FROM 학생 ORDER BY 이름;', '글자도 정렬돼요 (가나다 순).'),
+    H('상위 N개만: LIMIT'),
+    P('"1등만", "상위 3명만"처럼 개수를 제한할 때는 <code>LIMIT</code>를 써요. <b>ORDER BY 와 같이</b> 써야 의미가 있어요.'),
+    TRY('SELECT 이름, 점수 FROM 학생 ORDER BY 점수 DESC LIMIT 3;', '점수 상위 3명'),
+    TRY('SELECT 이름, 점수 FROM 학생 ORDER BY 점수 DESC LIMIT 2 OFFSET 2;', 'OFFSET 2 → 앞의 2개를 건너뛰고 그다음 2개 (3등, 4등)'),
+    TIP('<b>DB마다 문법이 달라요.</b> LIMIT은 MySQL·SQLite·PostgreSQL 방식이에요. Oracle에서는 <code>WHERE ROWNUM &lt;= 3</code> 또는 <code>FETCH FIRST 3 ROWS ONLY</code>, SQL Server에서는 <code>SELECT TOP 3 …</code>를 써요. 시험에서는 "1등 한 명"을 <code>ORDER BY … DESC LIMIT 1</code>로 자주 물어봐요.'),
+    QUIZ('SELECT 이름 FROM 학생 ORDER BY 점수 DESC LIMIT 3;', ['수빈, 지민, 예은', '도윤, 서준, 민수', '수빈, 지민, 민수'], '점수 내림차순은 수빈(95) → 지민(91) → 예은(88) → 민수(82)… 위에서 3개는 수빈, 지민, 예은이에요.'),
+    QUIZ('SELECT 이름 FROM 학생 ORDER BY 점수 LIMIT 1;', ['수빈', '도윤', '민수'], 'ASC(기본)이라 점수가 가장 낮은 학생이 맨 위에 와요. 70점 도윤이에요. "최고점"을 구하려면 DESC가 필요해요!'),
+    MISSION('m4-1', '학생의 이름과 점수를 <b>점수가 높은 순서</b>로 조회하세요.', 'SELECT 이름, 점수 FROM 학생 ORDER BY 점수 DESC', ['높은 순 = 내림차순 = DESC'], { ordered: true }),
+    MISSION('m4-2', '<b>점수가 가장 높은 학생 1명</b>의 이름을 조회하세요.', 'SELECT 이름 FROM 학생 ORDER BY 점수 DESC LIMIT 1', ['높은 순으로 정렬하고 1개만 가져오기', 'ORDER BY 점수 DESC LIMIT 1'], { ordered: true }),
+    MISSION('m4-3', 'IT 학과 학생의 이름과 점수를 <b>점수 낮은 순</b>으로 조회하세요.', "SELECT 이름, 점수 FROM 학생 WHERE 학과 = 'IT' ORDER BY 점수", ['WHERE 다음에 ORDER BY 가 와요 (순서가 중요!)', '낮은 순은 ASC, 생략해도 돼요.'], { ordered: true })
+  ] });
+
+LESSONS.push({ id: 'L5', title: '합계·평균·그룹별로 묶기', min: 14, data: 'school',
+  goal: '집계함수(COUNT·SUM·AVG·MAX·MIN)와 GROUP BY·HAVING을 쓰고, SELECT 문의 실행 순서를 설명할 수 있다.',
+  blocks: [
+    P('여러 행을 <b>하나의 값으로 요약</b>하는 함수를 <b>집계함수</b>라고 해요. 결과는 (그룹당) 1행이 돼요.'),
+    { t: 'terms', items: [['COUNT(*)', '행의 개수 (NULL이 있어도 센다)'], ['COUNT(열)', 'NULL이 <b>아닌</b> 값의 개수'], ['SUM(열) / AVG(열)', '합계 / 평균 (NULL은 무시)'], ['MAX(열) / MIN(열)', '최댓값 / 최솟값']] },
+    TRY('SELECT COUNT(*) FROM 학생;', '학생이 몇 명? 6'),
+    TRY('SELECT SUM(점수), AVG(점수), MAX(점수), MIN(점수) FROM 학생;'),
+    TRY("SELECT COUNT(*), AVG(점수) FROM 학생 WHERE 학과 = 'IT';", 'WHERE가 먼저 적용된 뒤에 집계해요. IT 학생 3명의 평균!'),
+    TRY('SELECT COUNT(학과), COUNT(DISTINCT 학과) FROM 학생;', 'COUNT(DISTINCT 열)은 "종류의 수". 학과는 3종류!'),
+    WARN('집계함수는 <b>WHERE 안에 쓸 수 없어요</b>. <code>WHERE AVG(점수) >= 80</code> → 오류! (아래 HAVING에서 해결)'),
+    TRY('SELECT 이름 FROM 학생 WHERE AVG(점수) >= 80;', '일부러 틀린 예. 어떤 오류가 나는지 읽어 보세요.'),
+    H('1. 그룹별로 묶기: GROUP BY'),
+    P('"학과별 평균", "분류별 개수"처럼 <b>묶음마다</b> 계산하고 싶을 때 <code>GROUP BY 열</code>을 써요. 같은 값을 가진 행끼리 한 묶음이 되고, 집계함수는 묶음마다 계산돼요.'),
+    TRY('SELECT 학과, COUNT(*) FROM 학생 GROUP BY 학과;', '학과별 학생 수'),
+    TRY('SELECT 학과, AVG(점수) AS 평균 FROM 학생 GROUP BY 학과;', '학과별 평균 점수'),
+    WARN('GROUP BY를 쓰면 SELECT에는 <b>그룹 기준 열</b>과 <b>집계함수</b>만 쓸 수 있어요. <code>SELECT 이름, 학과, COUNT(*) … GROUP BY 학과</code>는 이름을 어느 학생 것으로 보여줄지 알 수 없어서 안 돼요.'),
+    H('2. 그룹에 조건 걸기: HAVING'),
+    P('<b>WHERE</b>는 그룹으로 묶기 <b>전에 행</b>을 거르고, <b>HAVING</b>은 묶은 <b>후에 그룹</b>을 걸러요. 집계함수 조건은 HAVING에만 쓸 수 있어요.'),
+    TRY('SELECT 학과, AVG(점수) FROM 학생 GROUP BY 학과 HAVING AVG(점수) >= 80;', '평균 80 이상인 학과만'),
+    TRY('SELECT 학과, COUNT(*) FROM 학생 GROUP BY 학과 HAVING COUNT(*) >= 2;', '학생이 2명 이상인 학과만'),
+    H('3. 실행 순서를 눈으로 보기 👀'),
+    P('SQL은 <b>쓰는 순서</b>와 <b>실행되는 순서</b>가 달라요. <code>FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY</code>. 아래 장치에서 쿼리를 바꿔 가며 [다음 단계]를 눌러 보세요. 연한 행은 그 단계에서 걸러진 행이에요.'),
+    { t: 'steps', sql: "SELECT 학과, AVG(점수) AS 평균\nFROM 학생\nWHERE 점수 >= 75\nGROUP BY 학과\nHAVING AVG(점수) >= 85\nORDER BY 평균 DESC" },
+    TIP('그래서 <code>WHERE 점수 >= 75</code>가 HAVING보다 먼저 적용되고, SELECT의 별칭(평균)은 HAVING에서 못 쓰는 경우가 많아요. 별칭은 SELECT 이후에야 생기니까요. (ORDER BY에서는 쓸 수 있어요.)'),
+    QUIZ('SELECT COUNT(*), MIN(점수) FROM 학생;', ['6 70', '6 95', '5 70'], '학생은 6명이고 가장 낮은 점수는 도윤의 70이에요.'),
+    QUIZ('SELECT 학과, COUNT(*) FROM 학생 GROUP BY 학과 ORDER BY COUNT(*) DESC LIMIT 1;', ['IT 3', '게임 2', 'IT 6'], '학과별 인원은 IT 3, 게임 2, 디자인 1. 가장 많은 학과 한 줄이 나와요.'),
+    QUIZ('SELECT 학과 FROM 학생 GROUP BY 학과 HAVING AVG(점수) >= 85;', ['게임', 'IT, 게임', 'IT'], 'IT 평균은 (82+76+95)/3 ≈ 84.3, 게임은 (91+88)/2 = 89.5, 디자인은 70. 85 이상은 게임뿐이에요.'),
+    MISSION('m5-1', '학생이 <b>모두 몇 명</b>인지 조회하세요.', 'SELECT COUNT(*) FROM 학생', ['행의 개수를 세는 함수 COUNT']),
+    MISSION('m5-2', '<b>학과별 학생 수</b>를 학과와 함께 조회하세요. (열 2개)', 'SELECT 학과, COUNT(*) FROM 학생 GROUP BY 학과', ['묶는 기준 열이 학과예요.', 'GROUP BY 학과']),
+    MISSION('m5-3', '<b>게임학과</b> 학생들의 <b>최고 점수와 평균 점수</b>를 조회하세요.', "SELECT MAX(점수), AVG(점수) FROM 학생 WHERE 학과 = '게임'", ['WHERE로 먼저 게임 학생만 남겨요.']),
+    MISSION('m5-4', '<b>평균 점수가 80점 이상인 학과</b>의 이름만 조회하세요.', 'SELECT 학과 FROM 학생 GROUP BY 학과 HAVING AVG(점수) >= 80', ['그룹에 거는 조건은 WHERE가 아니라…?', 'GROUP BY 학과 HAVING AVG(점수) >= 80']),
+    MISSION('m5-5', '학과별 <b>최고 점수</b>를 <b>최고</b>라는 제목으로, 높은 순서로 조회하세요. (학과, 최고)', 'SELECT 학과, MAX(점수) AS 최고 FROM 학생 GROUP BY 학과 ORDER BY 최고 DESC', ['ORDER BY에서는 별칭을 쓸 수 있어요.'], { ordered: true })
+  ] });
+
+var QS = function (q, options, ans, why) { return { t: 'quiz', kind: 'static', q: q, options: options, ans: ans, why: why }; };
+
+LESSONS.push({ id: 'L6', title: '데이터 넣고·고치고·지우기', min: 10, data: 'school',
+  goal: 'INSERT·UPDATE·DELETE로 데이터를 바꾸고, WHERE를 빠뜨렸을 때의 위험을 설명할 수 있다.',
+  blocks: [
+    P('이제 데이터를 <b>실제로 바꾸는</b> DML을 배워요. 실행하면 결과 표에서 <b style="color:var(--good)">초록 = 새로 추가된 행</b>, <b style="color:var(--warn)">노랑 = 값이 바뀐 행</b>, <b style="color:var(--bad)">빨강 취소선 = 삭제된 행</b>으로 표시해 줘요. 망쳐도 괜찮아요! DB 패널의 <b>↺ 처음 상태로</b>를 누르면 원래대로 돌아와요.'),
+    H('1. INSERT — 행 추가'),
+    SYN('INSERT INTO 표 VALUES (값1, 값2, …);\nINSERT INTO 표 (열1, 열2) VALUES (값1, 값2);'),
+    P('<b>열 이름을 생략</b>하면 표의 <b>모든 열을 순서대로</b> 값을 넣어야 해요. 일부 열만 넣으려면 열 이름을 적어요. 안 넣은 열은 <b>NULL</b>(또는 DEFAULT)이 돼요.'),
+    TRY("INSERT INTO 학생 VALUES (107, '하늘', '보안', 85);", '전체 열 입력. 초록색 새 행을 찾아보세요.'),
+    TRY("INSERT INTO 학생 (학번, 이름) VALUES (108, '라온');", '일부 열만 입력 → 학과, 점수는 NULL'),
+    TRY("INSERT INTO 학생 VALUES (109, '새봄', 'IT', 79), (110, '다온', '게임', 93);", '여러 행을 한 번에: VALUES 뒤에 괄호 묶음을 쉼표로 이어요.'),
+    TRY("INSERT INTO 학생 VALUES (101, '중복', 'IT', 50);", '이미 있는 학번 101 → 기본키 중복 오류! (8단원에서 자세히)'),
+    H('2. UPDATE — 값 수정'),
+    SYN('UPDATE 표 SET 열 = 새값 [, 열2 = 새값2] <b>WHERE 조건</b>;'),
+    TRY("UPDATE 학생 SET 점수 = 100 WHERE 이름 = '민수';", '노란색으로 바뀐 한 행을 확인하세요.'),
+    TRY("UPDATE 학생 SET 점수 = 점수 + 5 WHERE 학과 = 'IT';", '기존 값을 이용한 계산도 가능해요. IT 학생 모두 +5점.'),
+    WARN('<b>WHERE를 빠뜨리면 모든 행이 바뀌어요!</b> 아래를 실행해서 얼마나 무서운지 직접 보세요. (↺ 처음 상태로 복구할 수 있어요)'),
+    TRY('UPDATE 학생 SET 점수 = 0;', 'WHERE가 없다 → 전원 0점! 실제 DB에서 이러면 큰일이에요.'),
+    H('3. DELETE — 행 삭제'),
+    SYN('DELETE FROM 표 <b>WHERE 조건</b>;'),
+    TRY("DELETE FROM 학생 WHERE 이름 = '도윤';", '빨간 줄이 사라지는 행이에요.'),
+    TRY('DELETE FROM 학생 WHERE 점수 < 80;', '조건에 맞는 여러 행 삭제'),
+    WARN('<code>DELETE FROM 학생;</code> (WHERE 없음) = <b>모든 행 삭제</b>. 표의 구조는 남지만 데이터가 전부 사라져요. 실행 전에 같은 WHERE로 <b>SELECT를 먼저</b> 해서 대상 행을 확인하는 습관이 안전해요.'),
+    TIP('<b>안전한 습관:</b> ① SELECT * FROM 표 WHERE 조건 으로 대상 확인 → ② 같은 조건으로 UPDATE/DELETE 실행 → ③ SELECT로 결과 확인.'),
+    QUIZ("UPDATE 학생 SET 점수 = 점수 + 10 WHERE 학과 = '게임';\nSELECT 이름, 점수 FROM 학생 WHERE 학과 = '게임';", ['지민 101 / 예은 98', '지민 91 / 예은 88', '지민 101 / 예은 88'], '게임학과 학생(지민 91, 예은 88) 모두 10점이 올라 101, 98이 돼요. 여러 문장을 한 번에 실행하면 마지막 SELECT의 결과가 보여요.'),
+    QUIZ("DELETE FROM 학생 WHERE 학과 = 'IT';\nSELECT COUNT(*) FROM 학생;", ['3', '6', '0'], 'IT 학생 3명이 삭제되고 6 − 3 = 3명이 남아요.'),
+    QUIZ("INSERT INTO 학생 (학번, 이름) VALUES (107, '하늘');\nSELECT 이름, 학과, 점수 FROM 학생 WHERE 학번 = 107;", ['하늘 NULL NULL', '하늘 0 0', '(결과 없음)'], '이름과 학번만 넣었으니 나머지 열은 NULL이에요. (DEFAULT가 따로 없을 때)'),
+    QS('다음 중 WHERE 없이 실행하면 <b>모든 행</b>에 영향을 주는 SQL이 <b>아닌</b> 것은?', ['UPDATE 학생 SET 점수 = 0;', 'DELETE FROM 학생;', "INSERT INTO 학생 VALUES (1,'a','b',1);", 'SELECT * FROM 학생;'], 2, 'INSERT는 새 행을 한 개 더하는 명령이고 기존 행에는 영향이 없어요. (SELECT는 영향을 주진 않지만 모든 행을 "보여주긴" 해요.) UPDATE와 DELETE는 WHERE가 없으면 전부에 적용돼요.'),
+    MISSION('m6-1', "학번 <b>107</b>, 이름 <b>하늘</b>, 학과 <b>보안</b>, 점수 <b>85</b>인 학생을 추가하세요.", "INSERT INTO 학생 VALUES (107, '하늘', '보안', 85)", ['INSERT INTO 표 VALUES (값, 값, 값, 값)', "글자는 작은따옴표: '하늘'"]),
+    MISSION('m6-2', '<b>도윤</b>의 점수를 <b>80</b>점으로 수정하세요.', "UPDATE 학생 SET 점수 = 80 WHERE 이름 = '도윤'", ['UPDATE 표 SET 열 = 값 WHERE 조건', 'WHERE를 꼭 쓰세요! 안 쓰면 모두 바뀌어서 오답이에요.']),
+    MISSION('m6-3', '<b>디자인</b>학과 학생을 모두 삭제하세요.', "DELETE FROM 학생 WHERE 학과 = '디자인'", ['DELETE FROM 표 WHERE 조건']),
+    MISSION('m6-4', '<b>점수가 90점 미만</b>인 학생들의 점수를 <b>5점씩 올리세요.</b>', 'UPDATE 학생 SET 점수 = 점수 + 5 WHERE 점수 < 90', ['SET 점수 = 점수 + 5', '대상은 점수 < 90 인 행만'])
+  ] });
+
+LESSONS.push({ id: 'L7', title: '표 만들고 구조 바꾸기 (DDL)', min: 9, data: 'empty',
+  goal: 'CREATE·ALTER·DROP·TRUNCATE로 표의 구조를 다루고, DELETE·TRUNCATE·DROP의 차이를 설명할 수 있다.',
+  blocks: [
+    P('DDL(데이터 정의어)은 <b>표 자체의 구조</b>를 만들고 바꾸고 지워요. 지금 DB는 <b>텅 비어</b> 있어요. 아래 예제를 <b>위에서부터 차례로</b> 실행하면서 DB 패널에 표가 생기고 변하는 걸 보세요.'),
+    H('1. CREATE TABLE — 표 만들기'),
+    SYN('CREATE TABLE 표이름 (\n  열이름1 자료형 [제약조건],\n  열이름2 자료형,\n  …\n);'),
+    { t: 'terms', items: [['INT', '정수'], ['VARCHAR(n)', '최대 n글자의 가변 길이 문자열 (Oracle은 VARCHAR2)'], ['CHAR(n)', '항상 n글자로 채워지는 고정 길이 문자열'], ['DATE', '날짜'], ['DECIMAL(p,s) / FLOAT', '소수점이 있는 수']] },
+    TRY("CREATE TABLE 도서 (\n  번호 INT PRIMARY KEY,\n  제목 VARCHAR(30) NOT NULL,\n  가격 INT\n);", '오른쪽 DB 패널에 도서 표가 생겼어요. 🔑는 기본키!'),
+    TRY("INSERT INTO 도서 VALUES (1, '자바 입문', 20000), (2, 'SQL 기초', 18000);\nSELECT * FROM 도서;", '새 표에 데이터를 넣어 봐요.'),
+    H('2. ALTER TABLE — 구조 바꾸기'),
+    SYN('ALTER TABLE 표 ADD 열 자료형;          -- 열 추가\nALTER TABLE 표 MODIFY 열 새자료형;     -- 열 정의 변경\nALTER TABLE 표 DROP COLUMN 열;         -- 열 삭제\nALTER TABLE 표 RENAME COLUMN 옛 TO 새;  -- 열 이름 변경'),
+    TRY('ALTER TABLE 도서 ADD 저자 VARCHAR(20);', '새 열이 생기고, 기존 행의 저자는 NULL이에요.'),
+    TRY('ALTER TABLE 도서 MODIFY 제목 VARCHAR(50);', '제목을 더 길게 저장할 수 있게 변경'),
+    TRY('ALTER TABLE 도서 RENAME COLUMN 저자 TO 지은이;'),
+    TRY('ALTER TABLE 도서 DROP COLUMN 지은이;', '열을 지우면 그 열의 데이터도 함께 사라져요.'),
+    WARN('시험에서 <b>"CREATE COLUMN"이나 "ALTER TABLE … ADD COLUMN을 CREATE로"</b> 같은 틀린 보기가 나와요. 표를 <b>만들 때</b>는 CREATE, 이미 있는 표에 열을 <b>더할 때</b>는 ALTER예요. (CREATE는 TABLE, VIEW, INDEX 같은 <b>객체</b>를 만들 때만 써요.)'),
+    H('3. 비우기와 없애기 — DELETE · TRUNCATE · DROP'),
+    { t: 'cmp', head: ['', 'DELETE FROM 표', 'TRUNCATE TABLE 표', 'DROP TABLE 표'], rows: [['분류', 'DML', 'DDL', 'DDL'], ['지우는 것', '행 (WHERE로 일부만 가능)', '모든 행 (WHERE 불가)', '표 전체 (구조+데이터)'], ['표 구조', '남음', '남음', '<b>사라짐</b>'], ['되돌리기(ROLLBACK)', '가능', '불가 (DDL은 자동 확정)', '불가']] },
+    TRY('DELETE FROM 도서 WHERE 번호 = 2;\nSELECT * FROM 도서;', 'DELETE는 조건을 줄 수 있어요.'),
+    TRY('TRUNCATE TABLE 도서;\nSELECT * FROM 도서;', '모든 행이 사라졌지만 표(열 구조)는 남아 있어요. 오류 없이 빈 결과!'),
+    TRY('DROP TABLE 도서;\nSELECT * FROM 도서;', '표 자체가 사라져서 두 번째 문장에서 "no such table" 오류가 나요.'),
+    QS('표의 <b>구조는 남기고 모든 데이터만</b> 빠르게 지우는 명령은?', ['DROP TABLE', 'TRUNCATE TABLE', 'ALTER TABLE', 'CREATE TABLE'], 1, 'TRUNCATE는 구조를 남기고 모든 행을 지워요. DROP은 구조까지 모두 삭제해요.'),
+    QS('이미 만들어진 표에 새 열을 추가하는 명령은?', ['CREATE COLUMN', 'UPDATE TABLE', 'ALTER TABLE … ADD', 'INSERT COLUMN'], 2, '표의 구조를 바꾸는 명령은 ALTER TABLE이에요. 열 추가는 ADD, 삭제는 DROP COLUMN, 변경은 MODIFY.'),
+    MISSION('m7-1', "<b>상품</b> 표를 만드세요. 열: <b>코드</b>(INT, 기본키), <b>이름</b>(VARCHAR(20)), <b>가격</b>(INT)", 'CREATE TABLE 상품 (코드 INT PRIMARY KEY, 이름 VARCHAR(20), 가격 INT)', ['CREATE TABLE 상품 ( 열 자료형, 열 자료형, … );', '기본키는 열 정의 끝에 PRIMARY KEY']),
+    MISSION('m7-2', '위 표를 만들고, 이어서 <b>재고</b>(INT) 열을 추가하세요. (한 번에 두 문장 실행)', 'CREATE TABLE 상품 (코드 INT PRIMARY KEY, 이름 VARCHAR(20), 가격 INT); ALTER TABLE 상품 ADD 재고 INT;', ['문장은 세미콜론(;)으로 구분해서 이어 쓸 수 있어요.', 'ALTER TABLE 상품 ADD 재고 INT;']),
+    MISSION('m7-3', '<b>학생</b> 표가 이미 있어요. 이 표의 <b>모든 데이터를 지우되 표 구조는 남기세요.</b> (DELETE도, TRUNCATE도 가능하지만 이번엔 TRUNCATE로!)', 'TRUNCATE TABLE 학생', ['표 구조는 남기고 비운다 → TRUNCATE'], { data: 'school' }),
+    MISSION('m7-4', '<b>수강</b> 표를 <b>완전히 삭제</b>하세요. (표 구조까지)', 'DROP TABLE 수강', ['구조까지 삭제 → DROP TABLE'], { data: 'school' })
+  ] });
+
+LESSONS.push({ id: 'L8', title: '규칙으로 데이터 지키기 — 제약조건', min: 10, data: 'empty',
+  goal: 'PRIMARY KEY·NOT NULL·UNIQUE·CHECK·DEFAULT·FOREIGN KEY의 역할을 구분하고 오류를 읽을 수 있다.',
+  blocks: [
+    P('<b>제약조건</b>은 표에 "이런 값만 들어올 수 있어"라는 <b>규칙</b>을 거는 거예요. 규칙을 어기는 INSERT/UPDATE는 <b>오류</b>가 나고 데이터는 바뀌지 않아요. 이 단원에서는 오류 메시지를 읽는 연습을 많이 해요.'),
+    { t: 'terms', items: [['PRIMARY KEY (기본키)', '행을 구분하는 열. <b>중복 불가 + NULL 불가</b>. 표에 하나만.'], ['NOT NULL', '비워 둘 수 없음 (NULL 불가). 중복은 가능.'], ['UNIQUE', '<b>중복 불가</b>. 단, NULL은 허용돼요.'], ['CHECK (조건)', '조건을 만족하는 값만 허용. 예: CHECK (점수 BETWEEN 0 AND 100)'], ['DEFAULT 값', '값을 안 넣으면 자동으로 들어갈 기본값'], ['FOREIGN KEY (외래키)', '다른 표의 기본키를 참조. <b>참조되는 값이 있어야</b> 넣을 수 있음']] },
+    H('1. 규칙이 가득한 표 만들기'),
+    P('먼저 부모가 되는 <b>학과</b> 표를 만들고, 그것을 참조하는 <b>학생</b> 표를 만들어요. (참조당하는 표를 먼저 만들어야 해요!)'),
+    TRY("CREATE TABLE 학과 (\n  학과명 VARCHAR(10) PRIMARY KEY,\n  위치 VARCHAR(10)\n);\nINSERT INTO 학과 VALUES ('IT','서울'), ('게임','부산');"),
+    TRY("CREATE TABLE 학생 (\n  학번 INT PRIMARY KEY,\n  이름 VARCHAR(10) NOT NULL,\n  이메일 VARCHAR(30) UNIQUE,\n  점수 INT DEFAULT 0 CHECK (점수 BETWEEN 0 AND 100),\n  학과 VARCHAR(10),\n  FOREIGN KEY (학과) REFERENCES 학과(학과명)\n);", 'DB 패널에서 🔑 PK, NN(NOT NULL), UQ, FK 배지를 확인하세요.'),
+    TRY("INSERT INTO 학생 (학번, 이름, 이메일, 학과) VALUES (1, '민수', 'a@x.kr', 'IT');\nSELECT * FROM 학생;", '성공! 점수는 안 넣었더니 DEFAULT 0이 들어갔어요.'),
+    H('2. 일부러 규칙 어겨 보기'),
+    TRY("INSERT INTO 학생 (학번, 이름, 학과) VALUES (1, '지민', 'IT');", '❌ 기본키 중복: 학번 1이 이미 있어요.'),
+    TRY("INSERT INTO 학생 (학번, 학과) VALUES (2, 'IT');", '❌ NOT NULL: 이름을 비울 수 없어요.'),
+    TRY("INSERT INTO 학생 (학번, 이름, 이메일) VALUES (3, '서준', 'a@x.kr');", '❌ UNIQUE: 이메일 a@x.kr이 이미 있어요.'),
+    TRY("INSERT INTO 학생 (학번, 이름, 점수) VALUES (4, '수빈', 150);", '❌ CHECK: 점수는 0~100만 가능해요.'),
+    TRY("INSERT INTO 학생 (학번, 이름, 학과) VALUES (5, '예은', '보안');", '❌ FOREIGN KEY: 학과 표에 \'보안\'이 없어요.'),
+    TRY("INSERT INTO 학생 (학번, 이름, 이메일) VALUES (6, '도윤', NULL), (7, '새봄', NULL);\nSELECT 학번, 이름, 이메일 FROM 학생;", '✅ UNIQUE 열이라도 NULL은 여러 개 넣을 수 있어요! (NULL은 "값이 없음"이라 서로 같다고 보지 않아요)'),
+    H('3. 부모 행을 지우려 하면?'),
+    TRY("DELETE FROM 학과 WHERE 학과명 = 'IT';", '❌ 민수가 IT를 참조하고 있어서 지울 수 없어요. (참조 무결성)'),
+    TRY("UPDATE 학생 SET 학과 = NULL WHERE 학번 = 1;\nDELETE FROM 학과 WHERE 학과명 = 'IT';\nSELECT * FROM 학과;", '참조하던 행의 학과를 NULL로 바꾸면(참조 해제) 이제 지울 수 있어요.'),
+    TIP('<b>제약조건 한눈에 비교</b><br>· PRIMARY KEY = UNIQUE + NOT NULL (표에 1개)<br>· UNIQUE = 중복 불가, NULL 허용 (여러 개 가능)<br>· NOT NULL = NULL 불가, 중복 허용<br>· FOREIGN KEY = 다른 표의 값만 허용 (<b>참조 무결성</b>)'),
+    QS('값이 <b>중복되지 않고</b> NULL도 허용하지 않도록 하려면?', ['UNIQUE', 'NOT NULL', 'PRIMARY KEY', 'CHECK'], 2, 'PRIMARY KEY는 UNIQUE + NOT NULL이에요. UNIQUE만으로는 NULL이 들어갈 수 있고, NOT NULL만으로는 중복이 가능해요.'),
+    QS('다른 표의 기본키를 참조하여 <b>참조 무결성</b>을 지키게 하는 제약조건은?', ['PRIMARY KEY', 'FOREIGN KEY', 'DEFAULT', 'UNIQUE'], 1, '외래키(FOREIGN KEY)는 참조되는 표에 존재하는 값만 허용해서 참조 무결성을 보장해요.'),
+    QS('<code>점수 INT CHECK (점수 BETWEEN 0 AND 100)</code> 열에 <code>INSERT … VALUES (101)</code> 을 하면?', ['101이 저장된다', '오류가 나고 저장되지 않는다', '100으로 자동 변경된다', 'NULL이 저장된다'], 1, 'CHECK 조건을 어기면 오류가 나고 행이 저장되지 않아요. 값을 자동으로 고쳐 주지는 않아요.'),
+    MISSION('m8-1', "<b>회원</b> 표를 만드세요. <b>아이디</b> VARCHAR(10) <b>기본키</b>, <b>이름</b> VARCHAR(10) <b>NOT NULL</b>, <b>나이</b> INT", 'CREATE TABLE 회원 (아이디 VARCHAR(10) PRIMARY KEY, 이름 VARCHAR(10) NOT NULL, 나이 INT)', ['열 정의 뒤에 제약조건을 이어서 써요.', '아이디 VARCHAR(10) PRIMARY KEY, 이름 VARCHAR(10) NOT NULL, 나이 INT']),
+    MISSION('m8-2', "<b>메뉴</b> 표를 만드세요. <b>번호</b> INT 기본키, <b>이름</b> VARCHAR(20) UNIQUE, <b>가격</b> INT <b>CHECK (가격 >= 0)</b>, <b>판매중</b> INT <b>DEFAULT 1</b>", 'CREATE TABLE 메뉴 (번호 INT PRIMARY KEY, 이름 VARCHAR(20) UNIQUE, 가격 INT CHECK (가격 >= 0), 판매중 INT DEFAULT 1)', ['열마다 제약조건을 붙일 수 있어요.', '가격 INT CHECK (가격 >= 0), 판매중 INT DEFAULT 1']),
+    MISSION('m8-3', "<b>부서</b>와 <b>직원</b> 표를 만들어요. 부서(<b>부서명</b> VARCHAR(10) 기본키), 직원(<b>사번</b> INT 기본키, <b>부서명</b> VARCHAR(10) → <b>부서의 부서명을 참조하는 외래키</b>). 부서를 먼저 만드세요.", 'CREATE TABLE 부서 (부서명 VARCHAR(10) PRIMARY KEY); CREATE TABLE 직원 (사번 INT PRIMARY KEY, 부서명 VARCHAR(10), FOREIGN KEY (부서명) REFERENCES 부서(부서명));', ['FOREIGN KEY (열) REFERENCES 부모표(부모열)', '부모 표를 먼저 만들어야 해요!'])
+  ] });
+
+LESSONS.push({ id: 'L9', title: '표와 표를 이어 붙이기 — JOIN', min: 12, data: 'school_join',
+  goal: 'INNER·LEFT·RIGHT·FULL JOIN의 차이를 설명하고, JOIN으로 두 표를 연결해 조회할 수 있다.',
+  blocks: [
+    P('<b>학생</b> 표에는 학생 정보가, <b>수강</b> 표에는 (학번, 과목)이 따로 있어요. "민수가 어떤 과목을 듣나?"를 알려면 두 표를 <b>같은 값(학번)으로 이어야</b> 해요. 이게 <b>JOIN</b>이에요. 왜 표를 나눌까요? 학생 정보를 과목마다 반복해서 저장하면 낭비이고, 이름을 바꿀 때 여러 군데를 고쳐야 하니까요.'),
+    P('이 단원의 수강 표에는 일부러 <b>107번</b>이 있어요. 학생 표에는 없는 학번이에요. (오른쪽 DB 패널에서 확인!) 이런 "짝이 없는 행"이 JOIN 종류마다 어떻게 다루어지는지가 핵심이에요.'),
+    H('1. 교차 조인 — 일단 다 짝지어 보기'),
+    TRY('SELECT COUNT(*) FROM 학생, 수강;', '조건 없이 두 표를 쓰면 모든 행의 조합! 6 × 6 = 36개. 이게 <b>교차 조인(CROSS JOIN)</b>이에요. 의미 없는 조합이 많죠?'),
+    H('2. INNER JOIN — 짝이 있는 것만'),
+    SYN('SELECT … FROM 표A <b>[INNER] JOIN</b> 표B <b>ON</b> 표A.열 = 표B.열;'),
+    P('<code>ON</code> 뒤에 "어떤 열이 같으면 짝으로 볼지"를 써요. 두 표에 같은 이름의 열(학번)이 있으면 <b>표이름.열이름</b>으로 구분해야 해요.'),
+    TRY('SELECT 학생.이름, 수강.과목\nFROM 학생\nINNER JOIN 수강 ON 학생.학번 = 수강.학번;', '짝이 있는 5개 행만 나와요. 도윤·서준(수강 없음)과 107번(학생 없음)은 빠져요.'),
+    P('표 이름이 길면 <b>별칭</b>을 붙여 줄여 써요: <code>학생 S</code>, <code>수강 C</code>'),
+    TRY('SELECT S.이름, C.과목\nFROM 학생 S\nJOIN 수강 C ON S.학번 = C.학번\nWHERE C.과목 = \'자바\';', 'JOIN 뒤에 WHERE로 한 번 더 걸러도 돼요. (JOIN만 쓰면 INNER JOIN)'),
+    H('3. LEFT / RIGHT / FULL — 짝 없는 행도 살리기'),
+    { t: 'cmp', head: ['종류', '결과에 포함되는 행'], rows: [['INNER JOIN', '양쪽에 짝이 있는 행만'], ['LEFT [OUTER] JOIN', '<b>왼쪽 표는 전부</b> + 짝 있으면 붙이고, 없으면 NULL'], ['RIGHT [OUTER] JOIN', '<b>오른쪽 표는 전부</b> + 짝 없으면 왼쪽이 NULL'], ['FULL [OUTER] JOIN', '양쪽 전부 (짝 없으면 반대쪽 NULL)']] },
+    P('아래 시각화 장치로 JOIN 종류를 바꿔 보세요. 결과의 한 행에 <b>마우스를 올리면</b>(터치는 탭) 그 행이 어느 원본 행에서 왔는지 양쪽 표에서 하이라이트돼요. NULL은 <span style="background:var(--warn-bg);padding:0 4px;border-radius:4px">노란 칸</span>으로 표시돼요.'),
+    { t: 'joinviz' },
+    H('4. LEFT JOIN 활용: "없는 것 찾기"'),
+    TRY('SELECT 학생.이름, 수강.과목\nFROM 학생\nLEFT JOIN 수강 ON 학생.학번 = 수강.학번;', '서준·도윤은 과목이 NULL로 나와요.'),
+    TRY('SELECT 학생.이름\nFROM 학생\nLEFT JOIN 수강 ON 학생.학번 = 수강.학번\nWHERE 수강.학번 IS NULL;', '<b>수강을 하나도 안 한 학생</b> = 짝이 없어서 NULL이 된 행만 골라내기! 시험에 자주 나와요.'),
+    TRY('SELECT 학생.이름, COUNT(수강.과목) AS 과목수\nFROM 학생\nLEFT JOIN 수강 ON 학생.학번 = 수강.학번\nGROUP BY 학생.이름;', 'COUNT(수강.과목)은 NULL을 세지 않아서, 수강이 없는 학생이 0으로 나와요. (COUNT(*)였다면 1이 돼요!)'),
+    WARN('<b>ON과 WHERE는 달라요.</b> INNER JOIN에서는 같은 결과지만, LEFT JOIN에서 WHERE로 오른쪽 표를 걸러 버리면 NULL 행이 사라져서 사실상 INNER JOIN이 돼 버려요.'),
+    QUIZ('SELECT COUNT(*) FROM 학생, 수강;', ['36', '11', '6'], '학생 6행 × 수강 6행 = 36개의 조합이에요. 조건 없이 이으면 모든 경우의 수가 나와요.'),
+    QUIZ('SELECT 학생.이름, 수강.과목 FROM 학생 JOIN 수강 ON 학생.학번 = 수강.학번 WHERE 수강.과목 = \'SQL\';', ['민수 SQL / 수빈 SQL', '민수 SQL / 수빈 SQL / 서준 NULL', '민수 자바 / 민수 SQL / 수빈 SQL'], 'SQL 과목을 듣는 사람은 민수(101)와 수빈(104)이에요.'),
+    QUIZ('SELECT 학생.이름 FROM 학생 LEFT JOIN 수강 ON 학생.학번 = 수강.학번 WHERE 수강.학번 IS NULL;', ['서준, 도윤', '서준, 도윤, 하늘', '민수, 지민, 수빈, 예은'], '수강 기록이 없는 학생은 서준(103), 도윤(106)이에요. 107은 학생 표에 없으니 나오지 않아요.'),
+    QS('왼쪽 표의 <b>모든 행</b>을 결과에 포함하고, 오른쪽에 짝이 없으면 NULL로 채우는 JOIN은?', ['INNER JOIN', 'LEFT OUTER JOIN', 'RIGHT OUTER JOIN', 'CROSS JOIN'], 1, 'LEFT (OUTER) JOIN은 왼쪽 표의 행을 모두 보존해요.'),
+    MISSION('m9-1', '<b>자바</b>를 수강하는 학생의 <b>이름</b>을 조회하세요. (JOIN 사용)', "SELECT 학생.이름 FROM 학생 JOIN 수강 ON 학생.학번 = 수강.학번 WHERE 수강.과목 = '자바'", ['학생과 수강을 학번으로 이어요.', "ON 학생.학번 = 수강.학번 WHERE 수강.과목 = '자바'"]),
+    MISSION('m9-2', '<b>수강을 하나도 안 한 학생</b>의 이름을 LEFT JOIN으로 조회하세요.', 'SELECT 학생.이름 FROM 학생 LEFT JOIN 수강 ON 학생.학번 = 수강.학번 WHERE 수강.학번 IS NULL', ['LEFT JOIN 하면 짝 없는 학생은 수강 쪽이 NULL', 'WHERE 수강.학번 IS NULL']),
+    MISSION('m9-3', '학생별로 <b>이름</b>과 <b>수강 과목 수</b>를 조회하세요. 수강이 없는 학생은 0으로 나와야 해요. (이름, 과목수)', 'SELECT 학생.이름, COUNT(수강.과목) FROM 학생 LEFT JOIN 수강 ON 학생.학번 = 수강.학번 GROUP BY 학생.이름', ['모든 학생이 나오려면 LEFT JOIN', 'COUNT(*)가 아니라 COUNT(수강.과목)', 'GROUP BY 학생.이름']),
+    MISSION('m9-4', '<b>직원</b> 표와 <b>부서</b> 표를 JOIN해서, 부서 위치가 <b>서울</b>인 직원의 이름을 조회하세요. (직원 E, 부서 D로 별칭 사용 권장)', "SELECT E.이름 FROM 직원 E JOIN 부서 D ON E.부서 = D.부서 WHERE D.위치 = '서울'", ['직원.부서 = 부서.부서 로 이어요.', "WHERE D.위치 = '서울'"], { data: 'emp' })
+  ] });
+
+LESSONS.push({ id: 'L10', title: '쿼리 안의 쿼리 — 서브쿼리와 집합', min: 10, data: 'emp',
+  goal: '서브쿼리(스칼라·IN·EXISTS)와 UNION·INTERSECT·EXCEPT를 쓸 수 있다.',
+  blocks: [
+    P('<b>서브쿼리</b>는 괄호 ( ) 안에 쓴 또 다른 SELECT예요. <b>안쪽이 먼저 실행</b>되고, 그 결과를 바깥쪽 쿼리가 사용해요. 이 단원은 <b>직원·부서</b> 표(오른쪽)로 해요.'),
+    H('1. 값 하나를 돌려주는 서브쿼리 (스칼라)'),
+    P('"평균보다 급여가 높은 직원"은 두 단계예요. ① 평균 구하기 ② 그 값보다 큰 직원 찾기. 서브쿼리로 한 번에 써요.'),
+    TRY('SELECT AVG(급여) FROM 직원;', '① 평균을 먼저 확인해요. (403.33…)'),
+    TRY('SELECT 이름, 급여\nFROM 직원\nWHERE 급여 > (SELECT AVG(급여) FROM 직원);', '② 서브쿼리가 403.33으로 바뀐 것과 같아요.'),
+    H('2. 여러 값을 돌려주는 서브쿼리: IN / NOT IN'),
+    TRY("SELECT 이름 FROM 직원\nWHERE 부서 IN (SELECT 부서 FROM 부서 WHERE 위치 IN ('서울','부산'));", '위치가 서울·부산인 부서에 속한 직원'),
+    TRY('SELECT 부서 FROM 부서\nWHERE 부서 NOT IN (SELECT 부서 FROM 직원);', '직원이 한 명도 없는 부서 = 기획'),
+    WARN('<b>NOT IN의 함정:</b> 서브쿼리 결과에 NULL이 하나라도 있으면 NOT IN은 <b>아무 행도 돌려주지 않아요</b>. 아래를 실행해 보세요.'),
+    TRY('SELECT 이름 FROM 직원 WHERE 사번 NOT IN (1, NULL);', '사번이 1이 아닌 직원이 있는데도 결과가 비어요! NULL 때문에 "아님"을 확신할 수 없기 때문이에요.'),
+    H('3. EXISTS — "존재하나?"'),
+    TRY('SELECT 부서, 위치 FROM 부서 D\nWHERE EXISTS (SELECT 1 FROM 직원 E WHERE E.부서 = D.부서);', '직원이 1명이라도 있는 부서. 안쪽 쿼리가 바깥 행(D)을 참조해요. (상관 서브쿼리)'),
+    H('4. FROM 안의 서브쿼리 (인라인 뷰)'),
+    TRY('SELECT 부서, 평균\nFROM (SELECT 부서, AVG(급여) AS 평균 FROM 직원 GROUP BY 부서) T\nWHERE 평균 >= 400;', 'FROM 안의 서브쿼리는 "임시 표"처럼 쓰고, 반드시 별칭(T)이 필요해요.'),
+    H('5. 집합 연산자 — 두 SELECT의 결과를 합치고 빼기'),
+    { t: 'cmp', head: ['연산자', '의미', '중복'], rows: [['UNION', '합집합', '제거'], ['UNION ALL', '합집합', '<b>그대로 둠</b>'], ['INTERSECT', '교집합 (둘 다 있는 것)', '제거'], ['EXCEPT (Oracle은 MINUS)', '차집합 (앞에는 있고 뒤에는 없는 것)', '제거']] },
+    P('두 SELECT는 <b>열의 개수와 순서가 같아야</b> 해요.'),
+    TRY("SELECT 부서 FROM 직원 WHERE 급여 >= 450\nUNION\nSELECT 부서 FROM 부서 WHERE 위치 IN ('서울', '대구');", '급여 450 이상 직원의 부서(개발, 영업) ∪ 서울·대구 부서(개발, 인사) → 중복 제거'),
+    TRY("SELECT 부서 FROM 직원 WHERE 급여 >= 450\nUNION ALL\nSELECT 부서 FROM 부서 WHERE 위치 IN ('서울', '대구');", 'UNION ALL은 중복(개발)이 그대로 남아요.'),
+    TRY("SELECT 부서 FROM 직원\nINTERSECT\nSELECT 부서 FROM 부서 WHERE 위치 = '서울';", '직원이 있는 부서 ∩ 서울 부서'),
+    TRY('SELECT 부서 FROM 부서\nEXCEPT\nSELECT 부서 FROM 직원;', '모든 부서 − 직원이 있는 부서 = 기획'),
+    QUIZ('SELECT 이름 FROM 직원 WHERE 급여 > (SELECT AVG(급여) FROM 직원);', ['박하, 정우, 신아', '한솔, 오늘, 윤서', '박하'], '평균 급여는 (400+300+500+350+450+420)/6 ≈ 403.3이에요. 이보다 높은 직원은 박하(500), 정우(450), 신아(420)예요. 한솔은 400으로 평균 이하!'),
+    QUIZ('SELECT 부서 FROM 직원 WHERE 급여 >= 450 UNION SELECT 부서 FROM 부서 WHERE 위치 IN (\'서울\',\'대구\');', ['개발, 영업, 인사', '개발, 영업, 개발, 인사', '개발'], '첫째 결과 {개발, 영업} 둘째 결과 {개발, 인사}의 합집합에서 중복(개발)이 제거돼 개발, 영업, 인사가 나와요. (정렬 순서는 DB마다 다를 수 있어요)'),
+    QS('<b>중복을 제거하지 않고</b> 두 SELECT 결과를 합치는 연산자는?', ['UNION', 'UNION ALL', 'INTERSECT', 'EXCEPT'], 1, 'UNION ALL은 중복 제거 과정을 생략해서 모든 행을 그대로 합쳐요. 그래서 UNION보다 빠르기도 해요.'),
+    MISSION('m10-1', '<b>평균 급여보다 급여가 높은</b> 직원의 이름을 사번 순으로 조회하세요.', 'SELECT 이름 FROM 직원 WHERE 급여 > (SELECT AVG(급여) FROM 직원) ORDER BY 사번', ['평균은 서브쿼리로 구해요.', 'WHERE 급여 > (SELECT AVG(급여) FROM 직원)'], { ordered: true }),
+    MISSION('m10-2', '<b>직원이 한 명도 없는 부서</b>의 이름을 조회하세요. (NOT IN 서브쿼리)', 'SELECT 부서 FROM 부서 WHERE 부서 NOT IN (SELECT 부서 FROM 직원)', ['직원 표에 나타나는 부서 목록을 서브쿼리로.']),
+    MISSION('m10-3', '<b>급여가 가장 높은 직원</b>의 이름을 서브쿼리와 MAX를 써서 조회하세요.', 'SELECT 이름 FROM 직원 WHERE 급여 = (SELECT MAX(급여) FROM 직원)', ['최댓값을 서브쿼리로 구해서 같은 급여를 찾아요.']),
+    MISSION('m10-4', '부서 표의 부서에서 <b>직원 표의 부서를 뺀</b>(차집합) 결과를 EXCEPT로 조회하세요.', 'SELECT 부서 FROM 부서 EXCEPT SELECT 부서 FROM 직원', ['SELECT … EXCEPT SELECT …'])
+  ] });
+LESSONS.push({ id: 'L11', title: '뷰와 인덱스', min: 6, data: 'emp',
+  goal: '뷰(가상 테이블)와 인덱스(검색 속도 장치)의 목적을 설명하고 만들 수 있다.',
+  blocks: [
+    H('1. 뷰(VIEW) — 저장해 둔 SELECT'),
+    P('자주 쓰는 복잡한 SELECT를 이름 붙여 저장해 두면 <b>표처럼</b> 쓸 수 있어요. 이것이 <b>뷰</b>예요. 뷰는 <b>데이터를 복사해 두는 게 아니라</b> 조회할 때마다 원본 표에서 읽어와요. 그래서 원본이 바뀌면 뷰 결과도 바뀌어요.'),
+    SYN('CREATE VIEW 뷰이름 AS SELECT …;\nDROP VIEW 뷰이름;'),
+    TRY("CREATE VIEW 개발직원 AS\nSELECT 사번, 이름, 급여 FROM 직원 WHERE 부서 = '개발';", 'DB 패널에 뷰(👁)가 생겼어요.'),
+    TRY('SELECT * FROM 개발직원;', '표처럼 조회!'),
+    TRY("UPDATE 직원 SET 급여 = 600 WHERE 이름 = '한솔';\nSELECT * FROM 개발직원;", '원본을 바꿨더니 뷰의 결과도 바뀌었어요. 뷰는 "창문"이지 "복사본"이 아니에요.'),
+    TIP('<b>뷰를 쓰는 이유</b> ① 복잡한 쿼리를 단순하게 ② <b>보안</b>(일부 열·행만 보여주기: 급여 열은 숨기고 이름만 공개) ③ 같은 논리를 여러 곳에서 재사용. DROP VIEW로 뷰를 지워도 <b>원본 데이터는 그대로</b>예요.'),
+    TRY('DROP VIEW 개발직원;\nSELECT COUNT(*) FROM 직원;', '뷰를 지워도 직원 표의 6명은 그대로!'),
+    H('2. 인덱스(INDEX) — 책의 "찾아보기"'),
+    P('책 한 권에서 단어를 찾을 때 처음부터 다 읽지 않고 <b>찾아보기</b>를 이용하죠? 인덱스는 DB의 찾아보기예요. 자주 검색하는 열에 만들어 두면 <b>WHERE 검색이 빨라져요</b>. 결과는 똑같고 <b>속도만</b> 달라져요. 대신 INSERT/UPDATE/DELETE는 조금 느려지고 저장 공간을 더 써요.'),
+    SYN('CREATE INDEX 인덱스이름 ON 표(열);\nDROP INDEX 인덱스이름;'),
+    TRY('CREATE INDEX idx_직원_이름 ON 직원(이름);', '이 실습의 데이터는 몇 행뿐이라 속도 차이는 못 느끼지만, 수백만 행에서는 큰 차이가 나요.'),
+    TRY('CREATE UNIQUE INDEX uq_직원_이름 ON 직원(이름);', 'UNIQUE 인덱스는 중복을 허용하지 않는 인덱스예요.'),
+    TRY("INSERT INTO 직원 VALUES (7, '한솔', '인사', 300);", '❌ 이름 한솔이 이미 있어서 UNIQUE 인덱스가 막아요.'),
+    QS('<b>뷰(VIEW)</b>에 대한 설명으로 옳은 것은?', ['데이터를 별도로 복사하여 저장한다', '하나 이상의 표를 바탕으로 만든 가상 표이다', 'DROP VIEW를 하면 원본 표의 데이터도 삭제된다', '뷰에는 SELECT를 사용할 수 없다'], 1, '뷰는 SELECT를 저장한 가상 테이블이에요. 데이터는 원본 표에 있고, 뷰를 삭제해도 원본은 영향받지 않아요.'),
+    QS('<b>인덱스</b>를 만드는 주된 목적은?', ['저장 공간 절약', '데이터 보안 강화', '검색 속도 향상', '데이터 중복 입력'], 2, '인덱스는 검색(조회) 속도를 높이기 위한 구조예요.'),
+    MISSION('m11-1', "직원 중 <b>급여가 400 이상</b>인 사람의 <b>이름, 부서</b>를 보여주는 뷰 <b>고급직원</b>을 만드세요.", 'CREATE VIEW 고급직원 AS SELECT 이름, 부서 FROM 직원 WHERE 급여 >= 400', ['CREATE VIEW 이름 AS SELECT …']),
+    MISSION('m11-2', '<b>직원</b> 표의 <b>부서</b> 열에 <b>idx_부서</b>라는 이름의 인덱스를 만드세요.', 'CREATE INDEX idx_부서 ON 직원(부서)', ['CREATE INDEX 이름 ON 표(열)'])
+  ] });
+
+LESSONS.push({ id: 'L12', title: '되돌릴 수 있게 — 트랜잭션', min: 8, data: 'school',
+  goal: 'COMMIT·ROLLBACK·SAVEPOINT의 동작을 예측하고, 트랜잭션의 4가지 성질(ACID)을 설명할 수 있다.',
+  blocks: [
+    P('은행 이체를 생각해 보세요. A 계좌에서 10만 원을 빼고(UPDATE), B 계좌에 10만 원을 더하는(UPDATE) 사이에 오류가 나면? <b>둘 다 되거나 둘 다 안 돼야</b> 해요. 이렇게 <b>하나의 논리적 작업 단위</b>로 묶인 SQL 묶음을 <b>트랜잭션</b>이라고 해요.'),
+    { t: 'terms', items: [['COMMIT', '지금까지의 변경을 <b>영구 확정</b>'], ['ROLLBACK', '마지막 COMMIT 이후의 변경을 <b>모두 취소</b>'], ['SAVEPOINT 이름', '중간 저장점 표시'], ['ROLLBACK TO 이름', '그 저장점 <b>이후</b>의 변경만 취소']] },
+    TIP('이 실습에서 <b>BEGIN</b> 없이 쓴 INSERT/UPDATE/DELETE는 곧바로 확정(자동 커밋)돼요. <b>BEGIN</b>으로 트랜잭션을 시작하면 COMMIT 전까지는 <b>임시 상태</b>예요. (Oracle은 BEGIN 없이도 COMMIT 전까지 임시 상태이고, DDL은 자동 커밋이에요.) 결과 메시지의 <b>"아직 COMMIT 전 — 임시"</b> 표시를 보세요.'),
+    H('1. ROLLBACK — 없던 일로'),
+    TRY('BEGIN;', '트랜잭션 시작'),
+    TRY('DELETE FROM 학생;\nSELECT COUNT(*) FROM 학생;', '다 지워졌어요. 하지만 아직 임시!'),
+    TRY('ROLLBACK;\nSELECT COUNT(*) FROM 학생;', '6명이 돌아왔어요!'),
+    H('2. COMMIT — 확정'),
+    TRY("BEGIN;\nUPDATE 학생 SET 점수 = 100 WHERE 이름 = '도윤';\nCOMMIT;\nROLLBACK;\nSELECT 이름, 점수 FROM 학생 WHERE 이름 = '도윤';", 'COMMIT으로 확정한 뒤에는 ROLLBACK을 해도 되돌릴 수 없어요. 도윤은 100점 그대로!'),
+    H('3. SAVEPOINT — 부분 되돌리기'),
+    TRY("BEGIN;\nUPDATE 학생 SET 점수 = 0 WHERE 이름 = '민수';\nSAVEPOINT sp1;\nUPDATE 학생 SET 점수 = 0 WHERE 이름 = '지민';\nSELECT 이름, 점수 FROM 학생 WHERE 이름 IN ('민수','지민');", '민수와 지민 모두 0점 (임시)'),
+    TRY("ROLLBACK TO sp1;\nSELECT 이름, 점수 FROM 학생 WHERE 이름 IN ('민수','지민');", '저장점 이후(지민)만 취소 → 지민 91점 복구, 민수는 여전히 0점!'),
+    TRY("ROLLBACK;\nSELECT 이름, 점수 FROM 학생 WHERE 이름 IN ('민수','지민');", '전체 ROLLBACK → 민수도 복구.'),
+    WARN('<b>DDL(CREATE/ALTER/DROP/TRUNCATE)은 실행과 동시에 자동 커밋</b>돼서 ROLLBACK으로 되돌릴 수 없어요. (Oracle 기준) 그래서 TRUNCATE는 DELETE보다 위험해요.'),
+    H('4. 트랜잭션의 4가지 성질 — ACID'),
+    { t: 'terms', items: [['원자성 (Atomicity)', '전부 실행되거나 전부 실행되지 않는다 (All or Nothing)'], ['일관성 (Consistency)', '실행 전후에 DB가 규칙(제약조건)을 지키는 일관된 상태'], ['고립성 (Isolation)', '동시에 실행되는 다른 트랜잭션의 간섭을 받지 않는다'], ['지속성 (Durability)', '커밋된 결과는 장애가 나도 영구히 보존된다']] },
+    QUIZ("BEGIN;\nDELETE FROM 학생 WHERE 학과 = 'IT';\nROLLBACK;\nSELECT COUNT(*) FROM 학생;", ['6', '3', '0'], 'DELETE를 ROLLBACK으로 취소했으니 6명 그대로예요.'),
+    QUIZ("BEGIN;\nDELETE FROM 학생 WHERE 학과 = 'IT';\nCOMMIT;\nROLLBACK;\nSELECT COUNT(*) FROM 학생;", ['3', '6', '0'], 'COMMIT으로 확정된 뒤에는 ROLLBACK이 되돌릴 게 없어요. IT 3명이 삭제된 채 3명이 남아요.'),
+    QUIZ("BEGIN;\nUPDATE 학생 SET 점수 = 0 WHERE 이름 = '민수';\nSAVEPOINT a;\nUPDATE 학생 SET 점수 = 0 WHERE 이름 = '지민';\nROLLBACK TO a;\nCOMMIT;\nSELECT 이름, 점수 FROM 학생 WHERE 이름 IN ('민수', '지민');", ['민수 0 / 지민 91', '민수 82 / 지민 91', '민수 0 / 지민 0'], '저장점 a 이후(지민 수정)만 취소되고, 민수의 수정은 COMMIT으로 확정돼요.'),
+    QS('트랜잭션의 성질 중 "모두 실행되거나 전혀 실행되지 않아야 한다"에 해당하는 것은?', ['원자성', '일관성', '고립성', '지속성'], 0, 'All or Nothing은 원자성(Atomicity)이에요.'),
+    QS('다음 중 <b>ROLLBACK으로 되돌릴 수 없는</b> 것은?', ['INSERT 후 COMMIT 전', 'UPDATE 후 COMMIT 전', 'DELETE 후 COMMIT 전', 'COMMIT 이후의 변경'], 3, 'ROLLBACK은 마지막 COMMIT 이후의 변경만 취소해요.'),
+    MISSION('m12-1', '<b>BEGIN</b>으로 시작해서 <b>도윤을 삭제</b>하고 <b>COMMIT</b>으로 확정하세요.', "BEGIN; DELETE FROM 학생 WHERE 이름 = '도윤'; COMMIT;", ['BEGIN; … ; COMMIT; 순서로', "DELETE FROM 학생 WHERE 이름 = '도윤'"]),
+    MISSION('m12-2', '<b>BEGIN</b> 후 학생 전원의 점수를 <b>0</b>으로 바꿨다가, <b>ROLLBACK</b>으로 취소해서 원래대로 돌려놓으세요.', 'BEGIN; UPDATE 학생 SET 점수 = 0; ROLLBACK;', ['BEGIN; UPDATE …; ROLLBACK;']),
+    MISSION('m12-3', "<b>BEGIN</b> → 민수 점수를 <b>0</b>으로 수정 → <b>SAVEPOINT s1</b> → 지민 점수를 <b>0</b>으로 수정 → <b>ROLLBACK TO s1</b> → <b>COMMIT</b>. 결과는 민수만 0점이 돼야 해요.", "BEGIN; UPDATE 학생 SET 점수 = 0 WHERE 이름 = '민수'; SAVEPOINT s1; UPDATE 학생 SET 점수 = 0 WHERE 이름 = '지민'; ROLLBACK TO s1; COMMIT;", ['순서를 그대로 문장으로 옮겨 보세요.', 'SAVEPOINT s1; 와 ROLLBACK TO s1;'])
+  ] });
+
+LESSONS.push({ id: 'L13', title: '누가 무엇을 할 수 있나 — 권한 (DCL)', min: 5, data: 'school',
+  goal: 'GRANT·REVOKE로 사용자 권한을 주고 회수할 수 있다.',
+  blocks: [
+    P('여러 사람이 쓰는 DB에서는 <b>사용자마다 할 수 있는 일</b>을 다르게 해야 해요. 이때 쓰는 DCL(데이터 제어어)이 <b>GRANT</b>(권한 부여)와 <b>REVOKE</b>(권한 회수)예요. 이 실습에는 <b>관리자</b>와 <b>민수</b>라는 두 사용자가 있고, 아래 예제는 <b>누구로 실행되는지</b>(👤 표시)가 정해져 있어요. (실제 DB 서버의 권한 시스템을 단순하게 흉내 낸 것이에요.)'),
+    SYN('GRANT 권한 ON 표 TO 사용자;\nREVOKE 권한 ON 표 FROM 사용자;'),
+    P('권한 종류: <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code> (여러 개는 쉼표, 전부는 <code>ALL</code>)'),
+    TRY('SELECT * FROM 학생;', '아직 아무 권한이 없는 민수가 조회하면?', { as: '민수' }),
+    TRY('GRANT SELECT ON 학생 TO 민수;', '관리자가 민수에게 조회 권한을 줘요.'),
+    TRY('SELECT * FROM 학생;', '이제 민수도 조회가 돼요!', { as: '민수' }),
+    TRY("UPDATE 학생 SET 점수 = 0;", '하지만 SELECT 권한만 있으니 수정은 불가!', { as: '민수' }),
+    TRY('GRANT INSERT, UPDATE ON 학생 TO 민수;', '권한은 여러 개를 한 번에 줄 수 있어요.'),
+    TRY("UPDATE 학생 SET 점수 = 99 WHERE 이름 = '도윤';", '이제 수정 가능!', { as: '민수' }),
+    TRY('REVOKE UPDATE ON 학생 FROM 민수;', '권한 회수는 FROM!'),
+    TRY("UPDATE 학생 SET 점수 = 0 WHERE 이름 = '도윤';", '다시 막혔어요.', { as: '민수' }),
+    TRY('GRANT SELECT ON 수강 TO 민수;', '민수는 지금 학생 표만 아니라 수강 표도 읽게 됐어요.', {}),
+    TIP('GRANT 문에서는 <b>TO</b>, REVOKE 문에서는 <b>FROM</b>을 써요. 시험에서 자주 헷갈려요! <b>WITH GRANT OPTION</b>을 붙이면 받은 사용자가 다른 사람에게 그 권한을 다시 줄 수도 있어요.'),
+    QS('사용자 민수에게 학생 표의 조회 권한을 주는 올바른 SQL은?', ['GRANT SELECT ON 학생 TO 민수;', 'GRANT SELECT ON 학생 FROM 민수;', 'REVOKE SELECT ON 학생 TO 민수;', 'GIVE SELECT ON 학생 TO 민수;'], 0, '부여는 GRANT … TO, 회수는 REVOKE … FROM이에요.'),
+    QS('다음 중 DCL에 해당하는 명령만 고른 것은?', ['SELECT, INSERT', 'CREATE, DROP', 'GRANT, REVOKE', 'COMMIT, ROLLBACK'], 2, 'GRANT/REVOKE = DCL, COMMIT/ROLLBACK = TCL, CREATE/DROP = DDL, SELECT/INSERT = DML.'),
+    MISSION('m13-1', '사용자 <b>민수</b>에게 <b>학생</b> 표의 <b>SELECT, DELETE</b> 권한을 주세요.', 'GRANT SELECT, DELETE ON 학생 TO 민수', ['GRANT 권한, 권한 ON 표 TO 사용자']),
+    MISSION('m13-2', '먼저 민수에게 학생 표의 SELECT 권한을 주고, 이어서 그 권한을 <b>회수</b>하세요. (결과적으로 아무 권한도 없는 상태)', 'GRANT SELECT ON 학생 TO 민수; REVOKE SELECT ON 학생 FROM 민수;', ['REVOKE 권한 ON 표 FROM 사용자'])
+  ] });
+
+LESSONS.push({ id: 'L14', title: '종합 도전 & 자유 실습장', min: 12, data: 'all',
+  goal: '배운 것을 섞어서 쓰고, 자유 실습장에서 마음껏 실험할 수 있다.',
+  blocks: [
+    P('마지막이에요! 이제 <b>학생·수강·직원·부서·상품·주문</b> 표가 모두 있어요. 각 문제에서 어떤 표와 어떤 기능이 필요한지 스스로 판단해 보세요. 막히면 힌트(2단계)를 쓰세요.'),
+    H('📌 SQL 최종 정리'),
+    { t: 'cmp', head: ['분류', '명령', '핵심 한 줄'], rows: [['DML', 'SELECT', 'SELECT 열 FROM 표 WHERE … GROUP BY … HAVING … ORDER BY …'], ['DML', 'INSERT / UPDATE / DELETE', 'UPDATE·DELETE는 WHERE를 꼭!'], ['DDL', 'CREATE / ALTER / DROP / TRUNCATE', '구조를 만들고 바꾸고 지운다 (자동 커밋)'], ['DCL', 'GRANT / REVOKE', 'GRANT … TO, REVOKE … FROM'], ['TCL', 'COMMIT / ROLLBACK / SAVEPOINT', '확정 / 취소 / 중간 저장점']] },
+    { t: 'cmp', head: ['실행 순서', '절', '하는 일'], rows: [['1', 'FROM (JOIN)', '대상 표를 정한다'], ['2', 'WHERE', '행을 거른다 (집계함수 사용 불가)'], ['3', 'GROUP BY', '그룹으로 묶는다'], ['4', 'HAVING', '그룹을 거른다 (집계함수 가능)'], ['5', 'SELECT', '열을 고르고 계산한다'], ['6', 'ORDER BY', '정렬한다']] },
+    H('🏆 종합 도전 문제'),
+    MISSION('c1', '<b>상품</b> 표에서 가격이 <b>1000원 이상 2000원 이하</b>인 상품의 이름을 코드 순으로 조회하세요.', 'SELECT 상품명 FROM 상품 WHERE 가격 BETWEEN 1000 AND 2000 ORDER BY 코드', ['BETWEEN이 편해요.'], { ordered: true }),
+    MISSION('c2', '<b>상품</b> 표에서 분류별 <b>상품 수</b>와 <b>평균 가격</b>을 조회하세요. (분류, 상품수, 평균가격)', 'SELECT 분류, COUNT(*), AVG(가격) FROM 상품 GROUP BY 분류', ['GROUP BY 분류']),
+    MISSION('c3', '<b>주문</b>과 <b>상품</b>을 JOIN해서, <b>상품명별 총 주문 수량</b>을 많은 순서로 조회하세요. (상품명, 합계)', 'SELECT 상품.상품명, SUM(주문.수량) FROM 주문 JOIN 상품 ON 주문.코드 = 상품.코드 GROUP BY 상품.상품명 ORDER BY SUM(주문.수량) DESC', ['JOIN → GROUP BY → SUM', '정렬은 합계의 내림차순'], { ordered: true }),
+    MISSION('c4', '<b>한 번도 주문되지 않은</b> 상품의 이름을 조회하세요. (코드 순)', 'SELECT 상품명 FROM 상품 WHERE 코드 NOT IN (SELECT 코드 FROM 주문) ORDER BY 코드', ['NOT IN 서브쿼리 또는 LEFT JOIN … IS NULL 둘 다 가능해요.'], { ordered: true }),
+    MISSION('c5', '<b>직원</b> 표에서 부서별 <b>평균 급여가 375 이상</b>인 부서의 이름과 평균 급여를 부서 이름 순으로 조회하세요.', 'SELECT 부서, AVG(급여) FROM 직원 GROUP BY 부서 HAVING AVG(급여) >= 375 ORDER BY 부서', ['그룹 조건은 HAVING'], { ordered: true }),
+    MISSION('c6', '모든 <b>부서</b>의 부서 이름과 <b>직원 수</b>를 조회하세요. 직원이 없는 부서는 0으로. 부서 이름 순으로.', 'SELECT D.부서, COUNT(E.사번) FROM 부서 D LEFT JOIN 직원 E ON D.부서 = E.부서 GROUP BY D.부서 ORDER BY D.부서', ['부서 표가 기준이니까 LEFT JOIN, COUNT(E.사번)'], { ordered: true }),
+    MISSION('c7', '직원 중 <b>급여가 가장 낮은 직원</b>의 급여를 <b>50 올리는</b> UPDATE를 하세요. (서브쿼리 활용)', 'UPDATE 직원 SET 급여 = 급여 + 50 WHERE 급여 = (SELECT MIN(급여) FROM 직원)', ['WHERE 급여 = (SELECT MIN(급여) FROM 직원)']),
+    MISSION('c8', '<b>책</b> 표를 만드세요. <b>번호</b> INT 기본키, <b>제목</b> VARCHAR(30) NOT NULL, <b>가격</b> INT CHECK(가격 > 0). 그리고 (1,\'SQL\',15000) 한 행을 넣으세요.', "CREATE TABLE 책 (번호 INT PRIMARY KEY, 제목 VARCHAR(30) NOT NULL, 가격 INT CHECK (가격 > 0)); INSERT INTO 책 VALUES (1, 'SQL', 15000);", ['CREATE TABLE 후 INSERT'], { data: 'empty' }),
+    H('🧪 자유 실습장'),
+    P('아래에서 데이터를 고르고 마음대로 SQL을 실행해 보세요. 오류가 나도 괜찮아요. 오류 메시지를 읽는 것도 큰 공부예요. DB 패널의 ↺ 버튼으로 언제든 처음 상태로 돌아갈 수 있어요.'),
+    { t: 'sandbox' }
+  ] });
+
+
+;window.LESSONS=LESSONS;window.DATA=DATA;
+</script>
+<script>
+(function () {
+'use strict';
+var Lab = window.SQLLab, M = window.MiniSQL;
+/* ---------- 유틸 ---------- */
+function h(tag, a) {
+  var e = document.createElement(tag); a = a || {};
+  for (var k in a) {
+    var v = a[k]; if (v === null || v === undefined || v === false) continue;
+    if (k === 'class') e.className = v; else if (k === 'html') e.innerHTML = v;
+    else if (k === 'text') e.textContent = v;
+    else if (k.slice(0, 2) === 'on') e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (var i = 2; i < arguments.length; i++) add(e, arguments[i]);
+  return e;
+}
+function add(e, c) { if (c === null || c === undefined || c === false) return; if (Array.isArray(c)) c.forEach(function (x) { add(e, x); }); else e.appendChild(typeof c === 'string' || typeof c === 'number' ? document.createTextNode(String(c)) : c); }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function clear(e) { while (e.firstChild) e.removeChild(e.firstChild); return e; }
+function $(s, r) { return (r || document).querySelector(s); }
+function store(k, v) { try { if (v === undefined) { var x = localStorage.getItem(k); return x ? JSON.parse(x) : null; } localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+var KW = 'SELECT FROM WHERE GROUP BY HAVING ORDER ASC DESC LIMIT OFFSET DISTINCT AS AND OR NOT IN BETWEEN LIKE IS NULL JOIN INNER LEFT RIGHT FULL OUTER CROSS ON UNION ALL INTERSECT EXCEPT MINUS EXISTS INSERT INTO VALUES UPDATE SET DELETE CREATE TABLE VIEW INDEX UNIQUE ALTER ADD DROP COLUMN MODIFY RENAME TO TRUNCATE PRIMARY KEY FOREIGN REFERENCES CHECK DEFAULT CONSTRAINT BEGIN COMMIT ROLLBACK SAVEPOINT GRANT REVOKE CASE WHEN THEN ELSE END IF'.split(' ');
+var KWSET = {}; KW.forEach(function (k) { KWSET[k] = 1; });
+var TYPES = { INT: 1, INTEGER: 1, VARCHAR: 1, CHAR: 1, DATE: 1, DECIMAL: 1, FLOAT: 1, VARCHAR2: 1, NUMBER: 1 };
+var FN = { COUNT: 1, SUM: 1, AVG: 1, MAX: 1, MIN: 1 };
+function hl(sql) {
+  return esc(sql).replace(/(--[^\n]*)|('(?:[^']|'')*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_가-힣][A-Za-z_0-9가-힣]*)/g, function (m, c, s, n, w) {
+    if (c) return '<span class="cm">' + c + '</span>';
+    if (s) return '<span class="st">' + s + '</span>';
+    if (n) return '<span class="nm">' + n + '</span>';
+    var u = w.toUpperCase();
+    if (KWSET[u]) return '<span class="kw">' + w + '</span>';
+    if (TYPES[u]) return '<span class="ty">' + w + '</span>';
+    if (FN[u]) return '<span class="fn">' + w + '</span>';
+    return w;
+  });
+}
+function toast(msg) { var t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove('on'); }, 2200); }
+
+/* ---------- 상태·진행 ---------- */
+var LESSONS = window.LESSONS, DATA = window.DATA;
+var PK = 'sqllab.v1.progress';
+var prog = store(PK) || { m: {}, q: {}, seen: {} };
+function saveProg() { store(PK, prog); }
+function lessonStat(l) {
+  var m = l.blocks.filter(function (b) { return b.t === 'mission'; }), d = m.filter(function (b) { return prog.m[b.id]; }).length;
+  return { total: m.length, done: d };
+}
+function allStat() { var t = 0, d = 0; LESSONS.forEach(function (l) { var s = lessonStat(l); t += s.total; d += s.done; }); return { total: t, done: d }; }
+function dataScript(key) { var k = key === 'all' ? 'all' : key; return DATA[k] || ''; }
+function freshSession(key) { return Lab.makeSession(dataScript(key)); }
+var cur = { lesson: null, sess: null, dbOpen: true };
+
+/* ---------- 결과 표 ---------- */
+function cellEl(v, cls) {
+  var td = h('td', { class: cls || '' });
+  if (v === null || v === undefined) td.appendChild(h('span', { class: 'null', text: 'NULL' }));
+  else { td.textContent = (typeof v === 'number' && !Number.isInteger(v)) ? String(Math.round(v * 1e4) / 1e4) : String(v); if (typeof v === 'number') td.classList.add('num'); }
+  return td;
+}
+function tableEl(cols, rows, o) {
+  o = o || {};
+  var thead = h('thead', {}, h('tr', {}, (o.rowMark ? h('th', { class: 'mk' }) : null), cols.map(function (c) { return h('th', { text: c }); })));
+  var tb = h('tbody');
+  var shown = rows.slice(0, 200);
+  shown.forEach(function (r, i) {
+    var cls = o.rowCls ? (o.rowCls(i) || '') : '';
+    var tr = h('tr', { class: cls }, o.rowMark ? h('td', { class: 'mk', text: o.rowMark(i) || '' }) : null, r.map(function (v, j) { return o.cell ? o.cell(v, i, j) : cellEl(v); }));
+    if (o.hover) { tr.addEventListener('mouseenter', function () { o.hover(i, true); }); tr.addEventListener('mouseleave', function () { o.hover(i, false); }); tr.addEventListener('click', function () { o.hover(i, true); }); }
+    tb.appendChild(tr);
+  });
+  if (!rows.length) tb.appendChild(h('tr', {}, h('td', { class: 'empty', colspan: cols.length + (o.rowMark ? 1 : 0), text: '(결과 없음 — 조건에 맞는 행이 없어요)' })));
+  var wrap = h('div', { class: 'tw' }, h('table', { class: 'rt' }, thead, tb));
+  if (rows.length > 200) wrap.appendChild(h('div', { class: 'more', text: '… 앞의 200행만 보여줘요 (전체 ' + rows.length + '행)' }));
+  return wrap;
+}
+function renderResults(results, box) {
+  clear(box);
+  results.forEach(function (r) {
+    var echo = results.length > 1 && r.sql ? h('div', { class: 'echo', html: hl(r.sql.split('\n')[0].slice(0, 70) + (r.sql.indexOf('\n') > 0 || r.sql.length > 70 ? ' …' : '')) }) : null;
+    var node;
+    if (r.kind === 'select') {
+      node = h('div', { class: 'res select' }, h('div', { class: 'cap', text: '▤ 결과 ' + r.rows.length + '행 × ' + r.cols.length + '열' }), tableEl(r.cols, r.rows));
+    } else if (r.kind === 'dml') {
+      var d = r.diff, before = r.before, after = r.after, rows, cls, ncap;
+      if (r.dkind === 'delete') { rows = before; var rm = {}; d.removed.forEach(function (i) { rm[i] = 1; }); cls = function (i) { return rm[i] ? 'del' : ''; }; ncap = '빨간 취소선 행이 삭제됐어요'; }
+      else { rows = after; var ad = {}, ch = {}; d.added.forEach(function (i) { ad[i] = 1; }); d.changed.forEach(function (i) { ch[i] = 1; }); cls = function (i) { return ad[i] ? 'add' : ch[i] ? 'chg' : ''; }; ncap = r.dkind === 'insert' ? '초록 행이 새로 추가됐어요' : '노란 칸이 바뀐 값이에요 (이전 → 이후)'; }
+      var cellf = null;
+      if (r.dkind === 'update') cellf = function (v, i, j) { if (ch[i] && before[i] && before[i][j] !== after[i][j]) { var td = h('td', { class: 'chgcell' }); var o = before[i][j]; td.appendChild(h('s', { text: o === null ? 'NULL' : String(o) })); td.appendChild(document.createTextNode(' → ' + (v === null ? 'NULL' : v))); return td; } return cellEl(v); };
+      node = h('div', { class: 'res dml' }, h('div', { class: 'okmsg', text: '✅ ' + r.msg }), h('div', { class: 'cap', text: '표 ' + r.table + ' — ' + ncap }), tableEl(r.cols, rows, { rowCls: cls, cell: cellf, rowMark: function (i) { return r.dkind === 'delete' ? (rm[i] ? '−' : '') : ad && ad[i] ? '＋' : (ch && ch[i] ? '✎' : ''); } }));
+    } else if (r.kind === 'msg') {
+      node = h('div', { class: 'res msg' + (r.ddl ? ' ddl' : '') }, h('div', { class: 'okmsg', text: (r.ddl ? '🛠 ' : r.tx ? '🔁 ' : r.priv ? '🔑 ' : '✅ ') + r.msg }));
+    } else {
+      node = h('div', { class: 'res err' }, h('div', { class: 'errmsg' }, h('b', { text: '❌ 오류  ' }), h('span', { text: r.msg })), r.skipped ? h('div', { class: 'skip', text: '(이 문장에서 멈췄어요. 뒤의 ' + r.skipped + '개 문장은 실행하지 않았어요)' }) : null, h('div', { class: 'errtip', text: '💡 오류는 실패가 아니라 힌트예요. 메시지를 천천히 읽고 SQL을 다시 확인해 보세요.' }));
+    }
+    box.appendChild(h('div', { class: 'resbox' }, echo, node));
+  });
+}
+
+/* ---------- 에디터 ---------- */
+function makeEditor(initial, o) {
+  o = o || {};
+  var ta = h('textarea', { class: 'sql', spellcheck: 'false', autocapitalize: 'off', autocomplete: 'off', autocorrect: 'off', rows: 1, 'aria-label': 'SQL 입력' });
+  var pre = h('pre', { class: 'hlpre', 'aria-hidden': 'true' });
+  var wrap = h('div', { class: 'ed' }, pre, ta);
+  function sync() {
+    var t = ta.value; pre.innerHTML = hl(t) + '\n';
+    var n = Math.max(2, t.split('\n').length); ta.style.height = pre.style.height = (n * 1.65 + 1.3) + 'em';
+  }
+  ta.value = initial || ''; sync();
+  ta.addEventListener('input', sync);
+  ta.addEventListener('scroll', function () { pre.scrollLeft = ta.scrollLeft; });
+  ta.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); o.onrun && o.onrun(); }
+    else if (e.key === 'Tab') { e.preventDefault(); var s = ta.selectionStart; ta.value = ta.value.slice(0, s) + '  ' + ta.value.slice(ta.selectionEnd); ta.selectionStart = ta.selectionEnd = s + 2; sync(); }
+  });
+  return { el: wrap, ta: ta, get: function () { return ta.value; }, set: function (v) { ta.value = v; sync(); }, sync: sync };
+}
+
+/* ---------- DB 패널 ---------- */
+function renderDB() {
+  var box = $('#dbbody'); clear(box);
+  var sess = cur.sess;
+  if (!sess) { box.appendChild(h('p', { class: 'muted', text: '단원을 열면 이곳에 표가 나타나요.' })); return; }
+  var info = sess.info();
+  $('#dbtitle').textContent = '📋 내 DB' + (sess.user !== '관리자' ? ' (' + sess.user + ')' : '');
+  if (sess.inTx) box.appendChild(h('div', { class: 'txbadge', text: '🔁 트랜잭션 진행 중 — COMMIT 전 (임시 변경 ' + sess.pending + '건)' }));
+  if (!info.length) box.appendChild(h('p', { class: 'muted', text: '아직 표가 없어요. CREATE TABLE로 만들어 보세요!' }));
+  info.forEach(function (t) {
+    var head = h('div', { class: 'tname' }, h('span', { class: 'ti', text: t.view ? '👁' : '▦' }), h('b', { text: t.name }), h('span', { class: 'cnt', text: t.rows.length + '행' }), t.view ? h('span', { class: 'vtag', text: 'VIEW' }) : null);
+    var cols = h('div', { class: 'cols' }, t.cols.map(function (c) {
+      return h('span', { class: 'col' + (c.pk ? ' pk' : '') }, c.name, c.type ? h('i', { text: ' ' + c.type.toLowerCase() }) : null, c.pk ? h('em', { class: 'bg pk', title: '기본키', text: 'PK' }) : null, c.fk ? h('em', { class: 'bg fk', title: '외래키 → ' + c.fk, text: 'FK' }) : null, c.nn && !c.pk ? h('em', { class: 'bg nn', title: 'NOT NULL', text: 'NN' }) : null, c.uq ? h('em', { class: 'bg uq', title: 'UNIQUE', text: 'UQ' }) : null);
+    }));
+    var extra = t.chk && t.chk.length ? h('div', { class: 'chk', text: 'CHECK: ' + t.chk.join(' · ') }) : null;
+    var vtxt = t.view ? h('pre', { class: 'vsql', html: hl(t.text) }) : null;
+    box.appendChild(h('div', { class: 'dbt' }, head, cols, extra, vtxt, tableEl(t.cols.map(function (c) { return c.name; }), t.rows.slice(0, 40))));
+  });
+  var idx = Object.keys(sess.indexes);
+  if (idx.length) box.appendChild(h('div', { class: 'idxs' }, h('b', { text: '인덱스 ' }), idx.map(function (n) { var x = sess.indexes[n]; return h('span', { class: 'chip', text: n + ' → ' + x.table + '(' + x.cols.join(',') + ')' + (x.unique ? ' UNIQUE' : '') }); })));
+  var pv = sess.priv; if (pv.length) box.appendChild(h('div', { class: 'idxs' }, h('b', { text: '권한 ' }), pv.map(function (p) { return h('span', { class: 'chip', text: p.user + ': ' + p.priv + ' ON ' + p.table }); })));
+}
+function resetSession() { if (!cur.lesson) return; cur.sess = freshSession(cur.lesson.data); renderDB(); toast('처음 상태로 되돌렸어요. (위 예제의 결과 표는 그대로 남아 있어요)'); }
+
+/* ---------- 블록: try ---------- */
+function runIn(sess, sql, as) { sess.user = as || '관리자'; var r = sess.exec(sql); sess.user = '관리자'; return r; }
+function blockTry(b) {
+  var out = h('div', { class: 'out' }), ed, orig = b.sql;
+  function run() { var r = runIn(cur.sess, ed.get(), b.as); renderResults(r, out); renderDB(); if (!out._seen) { out._seen = 1; } out.scrollIntoView && out.getBoundingClientRect().bottom > innerHeight && out.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+  ed = makeEditor(b.sql, { onrun: run });
+  return h('div', { class: 'blk try' }, b.note ? h('div', { class: 'note', html: b.note }) : null, b.as ? h('div', { class: 'asuser', text: '👤 ' + b.as + ' (으)로 실행돼요' }) : null, ed.el,
+    h('div', { class: 'btns' }, h('button', { class: 'btn primary', onclick: run, 'aria-label': '실행' }, '▶ 실행'), h('button', { class: 'btn ghost small', onclick: function () { ed.set(orig); clear(out); } }, '원래 예제로'), h('span', { class: 'hint', text: 'Ctrl+Enter' })), out);
+}
+
+/* ---------- 블록: quiz ---------- */
+function hash(s) { var x = 7; for (var i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) >>> 0; return x; }
+function shuffle(arr, seed) { var a = arr.slice(), x = seed || 1; for (var i = a.length - 1; i > 0; i--) { x = (x * 1103515245 + 12345) >>> 0; var j = x % (i + 1), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function cell(v) { return v === null ? 'NULL' : (typeof v === 'number' && !Number.isInteger(v)) ? String(Math.round(v * 100) / 100) : String(v); }
+function fmtRes(r) { return !r.rows.length ? '(결과 없음)' : r.cols.length === 1 ? r.rows.map(function (x) { return cell(x[0]); }).join(', ') : r.rows.map(function (x) { return x.map(cell).join(' '); }).join(' / '); }
+function lastSelect(res) { for (var i = res.length - 1; i >= 0; i--) if (res[i].kind === 'select') return res[i]; return null; }
+function blockQuiz(b, key) {
+  var correct, options, ansIdx, codeEl = null, runBox = null;
+  if (b.kind === 'static') { options = b.options.slice(); ansIdx = b.ans; var order = shuffle(options.map(function (_, i) { return i; }), hash(key)); options = order.map(function (i) { return b.options[i]; }); ansIdx = order.indexOf(b.ans); }
+  else {
+    var s = freshSession(b.data || cur.lesson.data), r = s.exec(b.sql), sel = lastSelect(r);
+    correct = b.kind === 'shape' && sel ? sel.rows.length + '행 · ' + sel.cols.length + '열' : (sel ? fmtRes(sel) : '(오류)');
+    var opts = b.wrong.filter(function (x) { return x !== correct; }); opts.push(correct);
+    options = shuffle(opts, hash(key)); ansIdx = options.indexOf(correct);
+    codeEl = h('pre', { class: 'code', html: hl(b.sql) });
+    runBox = h('div', { class: 'out' });
+  }
+  var fb = h('div', { class: 'fb' }), btns = [], done = false;
+  var wrap = h('div', { class: 'blk quiz' }, h('div', { class: 'qtag', text: b.kind === 'static' ? '🧠 개념 퀴즈' : '🔮 결과 예측하기' }),
+    h('div', { class: 'qq', html: b.kind === 'static' ? b.q : (b.pre || '아래 SQL을 <b>실행하기 전에</b> 결과를 예측해 보세요. 표를 눈으로 보고 머릿속으로 실행해 보는 연습이에요.') }), codeEl,
+    h('div', { class: 'opts' }, options.map(function (o, i) {
+      var bt = h('button', { class: 'opt', onclick: function () { pick(i); } }, h('span', { class: 'ol', text: 'ABCD'[i] }), h('span', { class: 'ot', text: o }));
+      btns.push(bt); return bt;
+    })), fb);
+  function pick(i) {
+    if (done && i !== ansIdx) return;
+    var ok = i === ansIdx; btns[i].classList.add(ok ? 'right' : 'wrong');
+    if (ok) { done = true; btns.forEach(function (x) { x.disabled = true; }); btns[ansIdx].classList.add('right'); if (prog.q[key] === undefined) { prog.q[key] = 1; saveProg(); } }
+    else if (prog.q[key] === undefined) { prog.q[key] = 0; saveProg(); btns[i].disabled = true; }
+    else btns[i].disabled = true;
+    clear(fb); fb.appendChild(h('div', { class: ok ? 'good' : 'bad' }, ok ? '🎉 정답이에요! ' : '🤔 아쉬워요. 다른 보기를 골라 보세요. '));
+    if (ok) {
+      fb.appendChild(h('div', { class: 'why', html: '<b>설명</b> ' + b.why }));
+      if (b.kind !== 'static') {
+        fb.appendChild(h('div', { class: 'btns' }, h('button', { class: 'btn small', onclick: function () { var s2 = freshSession(b.data || cur.lesson.data); renderResults(s2.exec(b.sql), runBox); } }, '▶ 실제로 실행해서 확인')));
+        fb.appendChild(runBox);
+      }
+    }
+  }
+  return wrap;
+}
+
+/* ---------- 블록: mission ---------- */
+function norm(v) { return typeof v === 'number' ? Math.round(v * 1e4) / 1e4 : v; }
+function rowsKey(rows, ordered) { var k = rows.map(function (r) { return JSON.stringify(r.map(norm)); }); return (ordered ? k : k.sort()).join('\n'); }
+function stateKey(s) {
+  var info = s.info().map(function (t) { return { n: t.name, v: t.view, c: t.cols.map(function (c) { return [c.name, (c.type || '').replace(/\s/g, ''), !!c.pk, !!c.nn, !!c.uq, c.fk || '']; }), r: rowsKey(t.rows, false), k: (t.chk || []).map(function (x) { return x.replace(/\s/g, '').toLowerCase(); }).sort() }; });
+  info.sort(function (a, b) { return a.n < b.n ? -1 : 1; });
+  var pv = s.priv.map(function (p) { return p.user + p.priv + p.table; }).sort(), ix = Object.keys(s.indexes).map(function (n) { return n + s.indexes[n].table + s.indexes[n].cols.join(','); }).sort();
+  return JSON.stringify({ i: info, p: pv, x: ix, t: s.inTx, v: Object.keys(s.viewText).sort() });
+}
+function grade(b, code, dataKey) {
+  var us = freshSession(dataKey), ur = us.exec(code), err = ur.filter(function (x) { return x.kind === 'error'; })[0];
+  if (err) return { res: ur, ok: false, why: 'error' };
+  var rs = freshSession(dataKey), rr = rs.exec(b.ref), rsel = lastSelect(rr);
+  if (rsel) {
+    var usel = lastSelect(ur);
+    if (!usel) return { res: ur, ok: false, why: '이 문제는 <b>조회(SELECT)</b> 결과를 보여줘야 해요. SELECT 문을 써 보세요.' };
+    if (usel.cols.length !== rsel.cols.length) return { res: ur, ok: false, why: '열의 개수가 달라요. (내 결과 ' + usel.cols.length + '열 / 필요한 열 ' + rsel.cols.length + '개) 문제에서 요구한 열만 조회했는지 확인해 보세요.' };
+    if (b.cols && usel.cols.map(function (c) { return c.toLowerCase(); }).join() !== rsel.cols.map(function (c) { return c.toLowerCase(); }).join()) return { res: ur, ok: false, why: '열 제목이 달라요. 문제에서 정한 이름(AS)을 확인해 보세요.' };
+    if (usel.rows.length !== rsel.rows.length) return { res: ur, ok: false, why: '행의 개수가 달라요. (내 결과 ' + usel.rows.length + '행 / 필요한 행 ' + rsel.rows.length + '개) 조건을 다시 살펴보세요.' };
+    if (rowsKey(usel.rows, !!b.ordered) !== rowsKey(rsel.rows, !!b.ordered)) return { res: ur, ok: false, why: b.ordered ? '값이 다르거나 <b>정렬 순서</b>가 달라요. ORDER BY를 확인해 보세요.' : '행의 개수는 같지만 값이 달라요. 조건이나 열을 다시 확인해 보세요.' };
+    return { res: ur, ok: true };
+  }
+  if (stateKey(us) === stateKey(rs)) return { res: ur, ok: true };
+  return { res: ur, ok: false, why: '실행은 됐지만 <b>DB의 최종 상태</b>가 문제에서 원하는 것과 달라요. 아래 "실행 후 DB 상태"를 보고, 문제를 다시 읽어 보세요. (미션은 매번 처음 상태에서 실행돼요)', state: us };
+}
+function blockMission(b, idx) {
+  var dataKey = b.data || cur.lesson.data, out = h('div', { class: 'out' }), ed, hintN = 0, hintBox = h('div', { class: 'hints' }), solBox = h('div'), status = h('span', { class: 'mstat' });
+  function setStat() { status.textContent = prog.m[b.id] ? '✅ 완료' : ''; wrap.classList.toggle('done', !!prog.m[b.id]); }
+  function run() {
+    var g = grade(b, ed.get(), dataKey); renderResults(g.res, out);
+    if (g.ok) { var first = !prog.m[b.id]; prog.m[b.id] = 1; saveProg(); setStat(); out.appendChild(h('div', { class: 'good big', text: first ? '🎉 정답! 미션 완료!' : '🎉 정답이에요!' })); refreshSide(); }
+    else if (g.why && g.why !== 'error') { out.appendChild(h('div', { class: 'bad big', html: '🤔 아직이에요. ' + g.why })); if (g.state) { out.appendChild(h('div', { class: 'cap', text: '실행 후 DB 상태 (이 미션 전용 DB)' })); var st = h('div'); g.state.info().forEach(function (t) { st.appendChild(h('div', { class: 'cap', text: (t.view ? '👁 ' : '▦ ') + t.name + ' (' + t.rows.length + '행)' })); st.appendChild(tableEl(t.cols.map(function (c) { return c.name; }), t.rows.slice(0, 12))); }); out.appendChild(st); } }
+    else if (g.why === 'error') out.appendChild(h('div', { class: 'bad big', text: '🤔 오류를 읽고 SQL을 고쳐서 다시 실행해 보세요.' }));
+  }
+  ed = makeEditor('', { onrun: run });
+  var hbtn = h('button', { class: 'btn small ghost', onclick: function () { if (hintN < b.hints.length) { hintBox.appendChild(h('div', { class: 'hint-i', html: '💡 힌트 ' + (hintN + 1) + ': ' + b.hints[hintN] })); hintN++; } if (hintN >= b.hints.length) { hbtn.disabled = true; } } }, '💡 힌트');
+  var sbtn = h('button', { class: 'btn small ghost', onclick: function () { if (!solBox.firstChild) { if (hintN < 1 && !confirm('먼저 힌트를 보고 도전해 볼까요? 그래도 정답을 볼까요?')) return; solBox.appendChild(h('div', { class: 'sol' }, h('div', { class: 'cap', text: '모범 답안 (다른 방법도 정답일 수 있어요)' }), h('pre', { class: 'code', html: hl(b.ref.split(';').map(function (x) { return x.trim(); }).filter(Boolean).join(';\n') + ';') }), h('button', { class: 'btn small', onclick: function () { ed.set(b.ref.split(';').map(function (x) { return x.trim(); }).filter(Boolean).join(';\n') + ';'); } }, '↧ 입력칸에 넣기'))); } } }, '🔓 정답 보기');
+  var preview = null;
+  if (b.data && b.data !== cur.lesson.data) {
+    var ps = freshSession(b.data); preview = h('details', { class: 'prev' }, h('summary', { text: '📋 이 문제에서 쓰는 표 보기' }), ps.info().map(function (t) { return h('div', {}, h('div', { class: 'cap', text: t.name + ' (' + t.rows.length + '행)' }), tableEl(t.cols.map(function (c) { return c.name; }), t.rows)); }));
+  } else if (cur.lesson.data !== 'empty') preview = null;
+  var wrap = h('div', { class: 'blk mission' }, h('div', { class: 'mtag' }, '🎯 미션 ', status), h('div', { class: 'mq', html: b.q }), preview, ed.el,
+    h('div', { class: 'btns' }, h('button', { class: 'btn primary', onclick: run }, '▶ 실행 · 채점'), hbtn, sbtn, h('span', { class: 'hint', text: '미션은 매번 처음 상태에서 시작해요' })), hintBox, solBox, out);
+  setStat(); return wrap;
+}
+
+/* ---------- 블록: 기타 ---------- */
+function blockTerms(b) { return h('dl', { class: 'terms' }, b.items.map(function (it) { return [h('dt', { html: it[0] }), h('dd', { html: it[1] })]; })); }
+function blockCmp(b) { return h('div', { class: 'tw' }, h('table', { class: 'cmp' }, h('thead', {}, h('tr', {}, b.head.map(function (x) { return h('th', { html: x }); }))), h('tbody', {}, b.rows.map(function (r) { return h('tr', {}, r.map(function (x, i) { return h(i === 0 ? 'th' : 'td', { html: x }); })); })))); }
+function blockSyn(b) { return h('div', { class: 'syn', html: b.html.replace(/\n/g, '<br>') }); }
+
+/* ---------- 실행 순서 장치 ---------- */
+function splitClauses(sql) {
+  sql = sql.replace(/;\s*$/, '').trim();
+  var masked = sql.replace(/'(?:[^']|'')*'/g, function (m) { return new Array(m.length + 1).join('x'); });
+  var re = /\b(SELECT|FROM|WHERE|GROUP\s+BY|HAVING|ORDER\s+BY|LIMIT)\b/gi, pos = [], m, depth = 0, last = 0;
+  var depthAt = []; for (var i = 0; i < masked.length; i++) { if (masked[i] === '(') depth++; if (masked[i] === ')') depth--; depthAt[i] = depth; }
+  while ((m = re.exec(masked))) if (depthAt[m.index] === 0) pos.push({ k: m[1].toUpperCase().replace(/\s+/g, ' '), i: m.index, e: m.index + m[0].length });
+  var o = {}; pos.forEach(function (p, i) { o[p.k] = sql.slice(p.e, i + 1 < pos.length ? pos[i + 1].i : sql.length).trim(); });
+  return o;
+}
+function multiset(rows) { var m = {}; rows.forEach(function (r) { var k = JSON.stringify(r); m[k] = (m[k] || 0) + 1; }); return m; }
+function stepsFor(sql, sess) {
+  var c = splitClauses(sql);
+  if (!c.SELECT || !c.FROM) throw new Error('SELECT … FROM … 형태의 문장을 써 주세요.');
+  if (/\bJOIN\b|,/.test(c.FROM) || /\(\s*SELECT/i.test(sql)) throw new Error('이 장치는 표 1개짜리 SELECT만 보여줄 수 있어요. (JOIN·서브쿼리는 9·10단원 장치를 이용하세요)');
+  var tbl = c.FROM.split(/\s+/)[0], st = [], run = function (q) { return M.run(sess.db, q); };
+  var base = run('SELECT * FROM ' + tbl);
+  st.push({ k: 'FROM', desc: '<b>FROM ' + esc(tbl) + '</b> — 어느 표를 쓸지 정하고 모든 행을 가져와요. (' + base.rows.length + '행)', cols: base.cols, rows: base.rows, dim: [] });
+  var kept = base;
+  if (c.WHERE) {
+    kept = run('SELECT * FROM ' + tbl + ' WHERE ' + c.WHERE); var ms = multiset(kept.rows), dim = base.rows.map(function (r) { var k = JSON.stringify(r); if (ms[k]) { ms[k]--; return false; } return true; });
+    st.push({ k: 'WHERE', desc: '<b>WHERE ' + esc(c.WHERE) + '</b> — 조건에 안 맞는 행을 버려요. 연한 행이 탈락! (' + base.rows.length + '행 → ' + kept.rows.length + '행)', cols: base.cols, rows: base.rows, dim: dim });
+  } else st.push({ k: 'WHERE', desc: '<b>WHERE</b> 없음 — 건너뛰어요. (모든 행 그대로)', cols: base.cols, rows: base.rows, dim: [], skip: true });
+  var gb = c['GROUP BY'];
+  if (gb) {
+    var gcols = gb.split(',').map(function (x) { return x.trim(); }), gi = gcols.map(function (g) { return kept.cols.indexOf(g); });
+    if (gi.some(function (x) { return x < 0; })) throw new Error('GROUP BY에는 이 표의 열 이름을 써 주세요.');
+    var groups = {}, order = []; kept.rows.forEach(function (r) { var k = JSON.stringify(gi.map(function (i) { return r[i]; })); if (!groups[k]) { groups[k] = []; order.push(k); } groups[k].push(r); });
+    st.push({ k: 'GROUP BY', desc: '<b>GROUP BY ' + esc(gb) + '</b> — 같은 값끼리 묶어요. 묶음(그룹)은 ' + order.length + '개!', groups: order.map(function (k) { return { key: JSON.parse(k), rows: groups[k] }; }), cols: kept.cols, gcols: gcols });
+    if (c.HAVING) {
+      var pass = run('SELECT ' + gb + ' FROM ' + tbl + (c.WHERE ? ' WHERE ' + c.WHERE : '') + ' GROUP BY ' + gb + ' HAVING ' + c.HAVING), pm = {}; pass.rows.forEach(function (r) { pm[JSON.stringify(r)] = 1; });
+      var vals = run('SELECT ' + gb + ', ' + 'COUNT(*) FROM ' + tbl + (c.WHERE ? ' WHERE ' + c.WHERE : '') + ' GROUP BY ' + gb);
+      st.push({ k: 'HAVING', desc: '<b>HAVING ' + esc(c.HAVING) + '</b> — 그룹에 조건을 걸어요. 연한 그룹이 탈락! (' + order.length + '그룹 → ' + pass.rows.length + '그룹)', groups: order.map(function (k) { return { key: JSON.parse(k), rows: groups[k], dim: !pm[k] }; }), cols: kept.cols, gcols: gcols });
+    } else st.push({ k: 'HAVING', desc: '<b>HAVING</b> 없음 — 건너뛰어요.', skip: true, groups: order.map(function (k) { return { key: JSON.parse(k), rows: groups[k] }; }), cols: kept.cols, gcols: gcols });
+  } else { st.push({ k: 'GROUP BY', desc: '<b>GROUP BY</b> 없음 — 건너뛰어요. (' + (/\b(COUNT|SUM|AVG|MAX|MIN)\s*\(/i.test(c.SELECT) ? '집계함수가 있으면 전체가 한 그룹이 돼요' : '그룹으로 묶지 않아요') + ')', skip: true, cols: kept.cols, rows: kept.rows, dim: [] }); if (c.HAVING) st.push({ k: 'HAVING', desc: '<b>HAVING</b>은 GROUP BY와 함께 쓰는 게 일반적이에요.', skip: true, cols: kept.cols, rows: kept.rows, dim: [] }); else st.push({ k: 'HAVING', desc: '<b>HAVING</b> 없음 — 건너뛰어요.', skip: true, cols: kept.cols, rows: kept.rows, dim: [] }); }
+  var noOrder = 'SELECT ' + c.SELECT + ' FROM ' + c.FROM + (c.WHERE ? ' WHERE ' + c.WHERE : '') + (gb ? ' GROUP BY ' + gb : '') + (c.HAVING ? ' HAVING ' + c.HAVING : '');
+  var sel = run(noOrder);
+  st.push({ k: 'SELECT', desc: '<b>SELECT ' + esc(c.SELECT) + '</b> — 이제서야 보여줄 열을 고르고 계산해요. (집계함수도 이때 계산)', cols: sel.cols, rows: sel.rows, dim: [] });
+  var fin = run(sql.replace(/;\s*$/, ''));
+  if (c['ORDER BY'] || c.LIMIT) st.push({ k: 'ORDER BY', desc: (c['ORDER BY'] ? '<b>ORDER BY ' + esc(c['ORDER BY']) + '</b> — 맨 마지막에 정렬해요.' : '') + (c.LIMIT ? ' <b>LIMIT ' + esc(c.LIMIT) + '</b> — 위에서 몇 개만 가져와요.' : ''), cols: fin.cols, rows: fin.rows, dim: [], fin: true });
+  else st.push({ k: 'ORDER BY', desc: '<b>ORDER BY</b> 없음 — 정렬하지 않아요. (최종 결과)', skip: true, cols: fin.cols, rows: fin.rows, dim: [], fin: true });
+  return st;
+}
+function blockSteps(b) {
+  var out = h('div', { class: 'stepout' }), idx = 0, steps = null, ed, bar = h('div', { class: 'stepbar' }), desc = h('div', { class: 'stepdesc' }), body = h('div'), nav = h('div', { class: 'btns' });
+  function analyze() {
+    try { steps = stepsFor(ed.get(), cur.sess || freshSession('school')); idx = 0; show(); }
+    catch (e) { steps = null; clear(bar); clear(body); clear(desc); desc.appendChild(h('div', { class: 'res err' }, h('div', { class: 'errmsg', text: '❌ ' + (e.message || e) }))); }
+  }
+  function show() {
+    clear(bar); clear(body); var names = ['FROM', 'WHERE', 'GROUP BY', 'HAVING', 'SELECT', 'ORDER BY'];
+    names.forEach(function (n, i) { var s = steps[i]; bar.appendChild(h('button', { class: 'stp' + (i === idx ? ' on' : '') + (i < idx ? ' past' : '') + (s.skip ? ' skip' : ''), onclick: function () { idx = i; show(); } }, h('i', { text: i + 1 }), n)); });
+    var s = steps[idx]; desc.innerHTML = s.desc;
+    if (s.groups) {
+      var tb = h('tbody');
+      s.groups.forEach(function (g) {
+        tb.appendChild(h('tr', { class: 'ghead' + (g.dim ? ' dim' : '') }, h('td', { colspan: s.cols.length, text: '▸ 그룹 ' + s.gcols.map(function (c, i) { return c + ' = ' + (g.key[i] === null ? 'NULL' : g.key[i]); }).join(', ') + '  (' + g.rows.length + '행)' + (g.dim ? '  ✖ 탈락' : '') })));
+        g.rows.forEach(function (r) { tb.appendChild(h('tr', { class: g.dim ? 'dim' : '' }, r.map(function (v) { return cellEl(v); }))); });
+      });
+      body.appendChild(h('div', { class: 'tw' }, h('table', { class: 'rt' }, h('thead', {}, h('tr', {}, s.cols.map(function (c) { return h('th', { text: c }); }))), tb)));
+    } else body.appendChild(tableEl(s.cols, s.rows, { rowCls: function (i) { return s.dim[i] ? 'dim' : ''; } }));
+    prev.disabled = idx === 0; next.disabled = idx === steps.length - 1;
+  }
+  var prev = h('button', { class: 'btn small', onclick: function () { if (idx > 0) { idx--; show(); } } }, '◀ 이전');
+  var next = h('button', { class: 'btn small primary', onclick: function () { if (idx < steps.length - 1) { idx++; show(); } } }, '다음 단계 ▶');
+  ed = makeEditor(b.sql, { onrun: analyze });
+  nav.appendChild(prev); nav.appendChild(next); nav.appendChild(h('button', { class: 'btn small ghost', onclick: analyze }, '▶ 이 쿼리로 분석'));
+  setTimeout(analyze, 0);
+  return h('div', { class: 'blk steps' }, h('div', { class: 'qtag', text: '👀 실행 순서 보기' }), ed.el, bar, desc, body, nav);
+}
+
+/* ---------- JOIN 시각화 ---------- */
+function blockJoinViz() {
+  var type = 'INNER', s = freshSession('school_join'), L = s.db.tables['학생'], R = s.db.tables['수강'];
+  var expl = { INNER: '양쪽에 짝이 있는 행만 남아요.', LEFT: '왼쪽(학생) 표는 모두 남고, 짝이 없으면 오른쪽 칸이 NULL이 돼요.', RIGHT: '오른쪽(수강) 표는 모두 남고, 짝이 없으면 왼쪽 칸이 NULL이 돼요. (107번 수강 기록!)', FULL: '양쪽 모두 남아요. 짝이 없는 쪽은 NULL로 채워져요.' };
+  var wrap = h('div', { class: 'blk joinviz' }), tabs = h('div', { class: 'jtabs' }), sqlEl = h('pre', { class: 'code' }), ex = h('div', { class: 'stepdesc' }), grid = h('div', { class: 'jgrid' });
+  var lt, rt, lrows, rrows;
+  function draw() {
+    clear(tabs); ['INNER', 'LEFT', 'RIGHT', 'FULL'].forEach(function (t) { tabs.appendChild(h('button', { class: 'stp' + (t === type ? ' on' : ''), onclick: function () { type = t; draw(); } }, t + ' JOIN')); });
+    var q = 'SELECT 학생.학번, 학생.이름, 수강.학번, 수강.과목\nFROM 학생\n' + type + ' JOIN 수강 ON 학생.학번 = 수강.학번';
+    sqlEl.innerHTML = hl(q); ex.innerHTML = '<b>' + type + ' JOIN</b> — ' + expl[type];
+    var res = M.run(s.db, q.replace(/학생\.학번, 학생\.이름, 수강\.학번, 수강\.과목/, '학생.학번 AS a, 학생.이름 AS n, 수강.학번 AS b, 수강.과목 AS c'));
+    clear(grid);
+    var lt0 = tableEl(L.cols, L.rows, { rowCls: function () { return 'jl'; } }), rt0 = tableEl(R.cols, R.rows, { rowCls: function () { return 'jr'; } });
+    lrows = lt0.querySelectorAll('tbody tr'); rrows = rt0.querySelectorAll('tbody tr');
+    var rtab = tableEl(['학생.학번', '이름', '수강.학번', '과목'], res.rows, {
+      hover: function (i, on) {
+        [].forEach.call(lrows, function (x) { x.classList.remove('hit'); }); [].forEach.call(rrows, function (x) { x.classList.remove('hit'); });
+        if (!on) return; var r = res.rows[i];
+        if (r[0] !== null) L.rows.forEach(function (x, k) { if (x[0] === r[0]) lrows[k].classList.add('hit'); });
+        if (r[2] !== null) R.rows.forEach(function (x, k) { if (x[0] === r[2] && x[1] === r[3]) rrows[k].classList.add('hit'); });
+      },
+      cell: function (v) { var td = cellEl(v); if (v === null) td.classList.add('nullhl'); return td; }
+    });
+    grid.appendChild(h('div', { class: 'jcol' }, h('div', { class: 'cap', text: '◀ 왼쪽: 학생 (' + L.rows.length + '행)' }), lt0));
+    grid.appendChild(h('div', { class: 'jcol' }, h('div', { class: 'cap', text: '오른쪽: 수강 (' + R.rows.length + '행) ▶' }), rt0));
+    grid.appendChild(h('div', { class: 'jcol wide' }, h('div', { class: 'cap', text: '⇒ 결과 ' + res.rows.length + '행  (행에 마우스를 올려 보세요)' }), rtab));
+  }
+  draw();
+  wrap.appendChild(h('div', { class: 'qtag', text: '🔗 JOIN 시각화' })); wrap.appendChild(tabs); wrap.appendChild(sqlEl); wrap.appendChild(ex); wrap.appendChild(grid);
+  return wrap;
+}
+
+/* ---------- 자유 실습장 ---------- */
+function blockSandbox() {
+  var out = h('div', { class: 'out' }), ed, sel = h('select', { class: 'sel', 'aria-label': '데이터 선택' }, [['all', '학교+직원+상품 (전부)'], ['school', '학교 (학생·수강)'], ['emp', '직원·부서'], ['shop', '상품·주문'], ['empty', '빈 DB']].map(function (o) { return h('option', { value: o[0], text: o[1] }); }));
+  var usr = h('select', { class: 'sel', 'aria-label': '사용자' }, ['관리자', '민수'].map(function (o) { return h('option', { value: o, text: '👤 ' + o }); }));
+  sel.addEventListener('change', function () { cur.sess = freshSession(sel.value); clear(out); renderDB(); toast('데이터를 바꿨어요.'); });
+  function run() { var r = runIn(cur.sess, ed.get(), usr.value); renderResults(r, out); renderDB(); }
+  ed = makeEditor("SELECT * FROM 학생;\n", { onrun: run });
+  return h('div', { class: 'blk sandbox' }, h('div', { class: 'qtag', text: '🧪 자유 실습장' }), h('div', { class: 'row' }, h('label', {}, '데이터 ', sel), h('label', {}, '실행 사용자 ', usr)), ed.el, h('div', { class: 'btns' }, h('button', { class: 'btn primary', onclick: run }, '▶ 실행'), h('span', { class: 'hint', text: 'Ctrl+Enter · 여러 문장은 ; 로 구분' })), out);
+}
+
+/* ---------- 단원 화면 ---------- */
+var main = null;
+function refreshSide() {
+  var s = allStat(); $('#gprog').textContent = '미션 ' + s.done + '/' + s.total; $('#gbar').style.width = (s.total ? s.done / s.total * 100 : 0) + '%';
+  LESSONS.forEach(function (l, i) { var el = document.getElementById('nav-' + l.id); if (!el) return; var st = lessonStat(l); el.classList.toggle('done', st.done === st.total); el.querySelector('.sc').textContent = st.done === st.total ? '✔' : st.done + '/' + st.total; });
+}
+function openLesson(id) {
+  var l = LESSONS.filter(function (x) { return x.id === id; })[0], i = LESSONS.indexOf(l);
+  if (!l) return home();
+  cur.lesson = l; cur.sess = freshSession(l.data); prog.seen[id] = 1; saveProg();
+  clear(main);
+  var qn = 0, mn = 0;
+  var kids = [h('div', { class: 'lhead' }, h('div', { class: 'lno', text: 'LESSON ' + (i + 1) + ' / ' + LESSONS.length + '  ·  약 ' + l.min + '분' }), h('h1', { text: l.title }), h('div', { class: 'goal', html: '🎯 <b>목표</b> ' + esc(l.goal) }))];
+  l.blocks.forEach(function (b, bi) {
+    var key = l.id + '#' + bi;
+    if (b.t === 'p') kids.push(h('p', { class: 'para', html: b.html }));
+    else if (b.t === 'h') kids.push(h('h2', { class: 'sec', html: b.html }));
+    else if (b.t === 'tip') kids.push(h('div', { class: 'callout tip', html: '💡 ' + b.html }));
+    else if (b.t === 'warn') kids.push(h('div', { class: 'callout warn', html: '⚠️ ' + b.html }));
+    else if (b.t === 'syn') kids.push(blockSyn(b));
+    else if (b.t === 'terms') kids.push(blockTerms(b));
+    else if (b.t === 'cmp') kids.push(blockCmp(b));
+    else if (b.t === 'try') kids.push(blockTry(b));
+    else if (b.t === 'quiz') kids.push(blockQuiz(b, key));
+    else if (b.t === 'mission') kids.push(blockMission(b, ++mn));
+    else if (b.t === 'steps') kids.push(blockSteps(b));
+    else if (b.t === 'joinviz') kids.push(blockJoinViz());
+    else if (b.t === 'sandbox') kids.push(blockSandbox());
+  });
+  var pn = h('div', { class: 'pn' }, i > 0 ? h('button', { class: 'btn', onclick: function () { go(LESSONS[i - 1].id); } }, '◀ ' + LESSONS[i - 1].title) : h('span'), i < LESSONS.length - 1 ? h('button', { class: 'btn primary', onclick: function () { go(LESSONS[i + 1].id); } }, LESSONS[i + 1].title + ' ▶') : h('button', { class: 'btn primary', onclick: function () { go('home'); } }, '🏠 처음 화면으로'));
+  main.appendChild(h('article', { class: 'lesson' }, kids, pn));
+  document.querySelectorAll('.nav a').forEach(function (a) { a.classList.toggle('on', a.id === 'nav-' + id); });
+  closeDrawers(); renderDB(); window.scrollTo(0, 0); refreshSide();
+}
+function home() {
+  cur.lesson = null; cur.sess = null; clear(main); renderDB();
+  var total = LESSONS.reduce(function (a, l) { return a + l.min; }, 0), s = allStat();
+  var next = LESSONS.filter(function (l) { var st = lessonStat(l); return st.done < st.total; })[0] || LESSONS[0];
+  main.appendChild(h('div', { class: 'home' }, h('div', { class: 'hero' }, h('div', { class: 'lno', text: '프로그래밍기능사 · SQL' }), h('h1', {}, 'SQL ', h('span', { class: 'acc', text: 'LAB' })), h('p', { class: 'sub', html: '완전 기초부터 직접 실행해 보며 배우는 <b>' + LESSONS.length + '개 단원 · 약 ' + Math.round(total / 10) * 10 + '분</b> 실습' }),
+    h('div', { class: 'btns' }, h('button', { class: 'btn primary big', onclick: function () { go(next.id); } }, (s.done ? '이어서 하기 ▶ ' : '시작하기 ▶ ') + next.title))),
+    h('div', { class: 'howto' }, h('div', { class: 'ho' }, h('b', { text: '1 읽기' }), h('span', { text: '짧은 설명을 읽어요' })), h('div', { class: 'ho' }, h('b', { text: '2 실행' }), h('span', { text: '▶ 버튼으로 직접 돌려 봐요' })), h('div', { class: 'ho' }, h('b', { text: '3 예측' }), h('span', { text: '결과를 먼저 맞혀 봐요' })), h('div', { class: 'ho' }, h('b', { text: '4 미션' }), h('span', { text: '직접 써서 채점받아요' }))),
+    h('div', { class: 'grid' }, LESSONS.map(function (l, i) { var st = lessonStat(l); return h('button', { class: 'card lcard' + (st.done === st.total ? ' done' : ''), onclick: function () { go(l.id); } }, h('div', { class: 'ln', text: String(i + 1) }), h('div', {}, h('b', { text: l.title }), h('div', { class: 'ls', text: '약 ' + l.min + '분 · 미션 ' + st.done + '/' + st.total + (st.done === st.total ? ' ✔' : '') }))); })),
+    h('p', { class: 'foot', html: '※ 이 사이트의 SQL 엔진은 <b>학습용으로 만든 간이 엔진</b>이에요. 기본 문법은 실제 DB(SQLite·MySQL·Oracle)와 같게 동작하도록 확인했지만, 모든 기능을 지원하지는 않아요. 인터넷 연결 없이 이 파일 하나로 동작해요.' }),
+    h('p', { class: 'foot' }, h('button', { class: 'btn small ghost', onclick: function () { if (confirm('진행 상황을 모두 지울까요?')) { prog = { m: {}, q: {}, seen: {} }; saveProg(); home(); refreshSide(); } } }, '진행 상황 초기화'))));
+  $('#nav-home') && document.querySelectorAll('.nav a').forEach(function (a) { a.classList.toggle('on', a.id === 'nav-home'); });
+  closeDrawers(); window.scrollTo(0, 0); refreshSide();
+}
+function go(id) { location.hash = id === 'home' ? '' : id; route(); }
+function route() { var id = location.hash.replace('#', ''); if (id && LESSONS.some(function (l) { return l.id === id; })) openLesson(id); else home(); }
+function closeDrawers() { document.body.classList.remove('navopen', 'dbopen'); }
+
+/* ---------- 초기화 ---------- */
+function init() {
+  var theme = store('sqllab.theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+  var app = $('#app');
+  var nav = h('nav', { class: 'nav', 'aria-label': '단원 목록' }, h('a', { id: 'nav-home', href: '#', class: 'home', onclick: function (e) { e.preventDefault(); go('home'); } }, '🏠 처음 화면'),
+    LESSONS.map(function (l, i) { return h('a', { id: 'nav-' + l.id, href: '#' + l.id, onclick: function (e) { e.preventDefault(); go(l.id); } }, h('span', { class: 'no', text: i + 1 }), h('span', { class: 't', text: l.title }), h('span', { class: 'min', text: l.min + '분' }), h('span', { class: 'sc' })); }));
+  main = h('main', { class: 'main', id: 'main' });
+  var db = h('aside', { class: 'db', 'aria-label': '내 DB' }, h('div', { class: 'dbh' }, h('b', { id: 'dbtitle', text: '📋 내 DB' }), h('span', { class: 'sp' }), h('button', { class: 'btn small', onclick: resetSession, title: '이 단원의 DB를 처음 상태로' }, '↺ 처음 상태로'), h('button', { class: 'btn small ghost dbx', onclick: function () { document.body.classList.remove('dbopen'); }, 'aria-label': '닫기' }, '✕')), h('div', { id: 'dbbody', class: 'dbbody' }));
+  var top = h('header', { class: 'top' }, h('div', { class: 'hin' }, h('button', { class: 'iconbtn menu', onclick: function () { document.body.classList.toggle('navopen'); }, 'aria-label': '단원 목록 열기' }, '☰'), h('button', { class: 'logo', onclick: function () { go('home'); } }, h('b', {}, 'SQL ', h('i', { text: 'LAB' })), h('small', { text: '프로그래밍기능사' })), h('span', { class: 'sp' }), h('div', { class: 'gp' }, h('span', { id: 'gprog', text: '' }), h('div', { class: 'bar' }, h('div', { id: 'gbar' }))), h('button', { class: 'iconbtn dbtog', onclick: function () { document.body.classList.toggle('dbopen'); }, 'aria-label': '내 DB 열기' }, '📋 내 DB'), h('button', { class: 'iconbtn', onclick: function () { var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', t); store('sqllab.theme', t); }, 'aria-label': '밝게/어둡게' }, '🌓')));
+  app.appendChild(top); app.appendChild(h('div', { class: 'shell' }, nav, main, db)); app.appendChild(h('div', { class: 'scrim', onclick: closeDrawers })); app.appendChild(h('div', { id: 'toast', role: 'status' }));
+  window.addEventListener('hashchange', route); route();
+}
+window.__SQLLAB = { stepsFor: stepsFor, grade: grade, lessons: LESSONS };
+document.addEventListener('DOMContentLoaded', init);
+})();
+
+</script></body></html>
